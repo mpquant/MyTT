@@ -70,6 +70,11 @@ RET(CLOSE, 1)             # 最近一天的收盘价，单个数据
 ```python
 RD(CLOSE)                    # 默认返回3位小数
 ```
+* 移动平均线计算：MA
+
+```python
+MA(CLOSE, 5)             # 取得收盘价5日平均线
+```
 
 * 加权移动平均计算：EMA
 
@@ -203,6 +208,36 @@ def CCI(CLOSE,HIGH,LOW,N=14):
 def ATR(CLOSE,HIGH,LOW, N=20):   #真实波动N日平均值
     TR = MAX(MAX((HIGH - LOW), ABS(REF(CLOSE, 1) - HIGH)), ABS(REF(CLOSE, 1) - LOW))
     return MA(TR, N)
+```
+
+### 因为语法的问题，我们需要使用 & 代替  「和」，用 | 代替 or 
+```python
+
+# 收盘价在10日均线上 且10日均线在20日均线上
+(C > MA(C, 10)) & (MA(C, 10) > MA(C, 20))
+
+# 收阳线 或 收盘价大于昨收
+(C > O) | (C > REF(C, 1))
+
+```
+
+### 自定义指标示例
+对于 DMI 这个指标，你会发现 TALib 算出来的结果，和同花顺等软件的结果不一样，是因为同花顺的公式和 TALib 的计算公式不一样，对于这种情况，只要把同花顺的公式搬过来，就可以算出和同花顺一样的结果。
+
+```python
+M1, M2 = 14, 6
+TR = SUM(MAX(MAX(HIGH - LOW, ABS(HIGH - REF(CLOSE, 1))), ABS(LOW - REF(CLOSE, 1))), M1)
+HD = HIGH - REF(HIGH, 1)
+LD = REF(LOW, 1) - LOW
+
+DMP = SUM(IF((HD > 0) & (HD > LD), HD, 0), M1)
+DMM = SUM(IF((LD > 0) & (LD > HD), LD, 0), M1)
+DI1 = DMP * 100 / TR
+DI2 = DMM * 100 / TR
+ADX = MA(ABS(DI2 - DI1) / (DI1 + DI2) * 100, M2)
+ADXR = (ADX + REF(ADX, M2)) / 2
+
+print(DI1, DI2, ADX, ADXR)
 ```
 
 
