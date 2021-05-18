@@ -16,37 +16,35 @@ MyTT将通达信,同花顺,文华麦语言等指标公式indicators,最简移植
 
 * MyTT实现的各种指标和通达信，同花顺，雪球等软件的指标一致到小数点后2位
 
+####  先看一个最简单的例子
 ```python
 
 #数字货币行情获取和指标计算演示
-from  hb_hq_api import *
-from  MyTT import *
+from  hb_hq_api import *         #数字货币行情库
+from  MyTT import *                #myTT指标库
 
-#日线数据获取  1d:1天  4h:4小时   60m: 60分钟    15m:15分钟
-df=get_price('btc.usdt',count=120,frequency='1d');   
-#-----------df结果如下表--------------------------------------------
+#获取btc.usdt交易对120日的数据
+df=get_price('btc.usdt',count=120,frequency='1d');     # ‘4h’是4小时
+
+#-----------df结果如下表(股市也基本一样)-------------------------------------------
 ```
 
-|open|	close|	high	|low|	vol|
+|   |open|	close|	high	|low|	vol|
 |--|--|--|--|--|
 |2021-05-16	|48983.62|	47738.24|	49800.00|	46500.0	|1.333333e+09
 |2021-05-17	|47738.24|	43342.50|	48098.66|	42118.0	|3.353662e+09
 |2021-05-18	|43342.50|	44093.24|	45781.52|	42106.0	|1.793267e+09
 
 ```python
-CLOSE=df.close.values;  OPEN=df.open.values;   HIGH=df.high.values;   LOW=df.low.values   #基础数据定义
+CLOSE=df.close.values;  OPEN=df.open.values
+HIGH=df.high.values;      LOW=df.low.values           #基础数据定义
 
-MA5=MA(CLOSE,5)
-MA10=MA(CLOSE,10)
-CROSS_TODAY=RET(CROSS(MA5,MA10))
+MA5=MA(CLOSE,5)                                                   #获取5日均线
+MA10=MA(CLOSE,10)                                               #获取10日均线
 
 print(f'BTC5日均线{ MA5[-1]}    BTC10日均线 {MA10[-1]}' )
-print('今天5日线是否上穿10日线',CROSS_TODAY)
-print('最近5天收盘价全都大于5日线吗？',EVERY(CLOSE>MA10,5) )
-
-DIF,DEA,MACD=MACD(CLOSE)
-print('MACD值',DIF,DEA,MACD)
-```
+print('今天5日线是否上穿10日线',RET(CROSS(MA5,MA10)) )
+print('最近5天收盘价全都大于10日线吗？',EVERY(CLOSE>MA10,5) )
 
 
 
