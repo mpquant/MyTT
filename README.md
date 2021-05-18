@@ -23,7 +23,16 @@ from  hb_hq_api import *
 from  MyTT import *
 
 #日线数据获取  1d:1天  4h:4小时   60m: 60分钟    15m:15分钟
-df=get_price('btc.usdt',count=120,frequency='1d');      
+df=get_price('btc.usdt',count=120,frequency='1d');   
+```
+> df结果如下表
+|open|	close|	high	|low|	vol|
+|--|--|--|--|--|
+|2021-05-16	|48983.62|	47738.24|	49800.00|	46500.0	|1.333333e+09
+|2021-05-17	|47738.24|	43342.50|	48098.66|	42118.0	|3.353662e+09
+|2021-05-18	|43342.50|	44093.24|	45781.52|	42106.0	|1.793267e+09
+
+```python
 CLOSE=df.close.values;  OPEN=df.open.values;   HIGH=df.high.values;   LOW=df.low.values   #基础数据定义
 
 MA5=MA(CLOSE,5)
@@ -38,11 +47,7 @@ DIF,DEA,MACD=MACD(CLOSE)
 print('MACD值',DIF,DEA,MACD)
 ```
 
-|open|	close|	high	|low|	vol|
-|--|--|--|--|--|
-|2021-05-16	|48983.62|	47738.24|	49800.00|	46500.0	|1.333333e+09
-|2021-05-17	|47738.24|	43342.50|	48098.66|	42118.0	|3.353662e+09
-|2021-05-18	|43342.50|	44093.24|	45781.52|	42106.0	|1.793267e+09
+
 
 
 ## 需安装第三方库
