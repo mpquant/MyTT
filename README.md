@@ -53,6 +53,47 @@ print('最近5天收盘价全都大于10日线吗？',EVERY(CLOSE>MA10,5) )
 
 ```
 
+### 工具函数
+* n天前的数据：REF
+
+```
+REF(CLOSE, 10)  # 10天前的收盘价
+```
+* 金叉判断：CROSS
+
+```
+CROSS(MA(CLOSE, 5), MA(CLOSE, 10))    # 5日均线上穿10日均线
+```
+* 两个序列取最大值,最小值：MAX    MIN
+
+```
+MAX(OPEN, CLOSE )                       # K线实体的最高价
+```
+* n天内满足条件的天数：COUNT
+
+```
+COUNT(CLOSE > OPEN, 10)           # 最近10天收阳线的天数
+```
+* n天内最大值：HHV
+
+```
+HHV(MAX(OPEN, CLOSE), 20)        # 最近20天K线实体的最高价
+```
+* n天内最小值：LLV
+
+```
+LLV(MIN(OPEN, CLOSE), 60)          # 最近60天K线实体的最低价
+```
+* 求和n日数据 SUM
+
+```
+SUM(CLOSE, 10)                            # 求和10天的收盘价
+```
+* 条件 IF
+
+```
+IF(OPEN > CLOSE, OPEN, CLOSE)        #如果 开盘>收盘  返回OPEN ，否则返回CLOSE
+```
 
 ## 需安装第三方库
 * requests
