@@ -60,7 +60,7 @@ print('最近5天收盘价全都大于10日线吗？',EVERY(CLOSE>MA10,5) )
 ```python
 REF(CLOSE, 1)              # 截止到昨天收盘价 序列
 ```
-* 从序列中取最后N个数据：RET
+* 从序列中取倒数第N个数据(单个)：RET
 
 ```python
 RET(CLOSE, 1)             # 最近一天的收盘价，单个数据
