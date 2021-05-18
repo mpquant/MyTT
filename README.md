@@ -7,8 +7,8 @@
 from  hb_hq_api import *
 from  MyTT import *
 
-
-df=get_price('btc.usdt',count=120,frequency='1d');      #日线数据获取  1d:1天  4h:4小时   60m: 60分钟    15m:15分钟
+#日线数据获取  1d:1天  4h:4小时   60m: 60分钟    15m:15分钟
+df=get_price('btc.usdt',count=120,frequency='1d');      
 CLOSE=df.close.values;  OPEN=df.open.values;   HIGH=df.high.values;   LOW=df.low.values   #基础数据定义
 
 MA5=MA(CLOSE,5)
