@@ -38,13 +38,14 @@ df=get_price('btc.usdt',count=120,frequency='1d');     # ‘4h’是4小时
 
 ```python
 CLOSE=df.close.values;  OPEN=df.open.values
-HIGH=df.high.values;      LOW=df.low.values           #基础数据定义
+HIGH=df.high.values;    LOW=df.low.values             #基础数据定义
 
-MA5=MA(CLOSE,5)                                       #获取5日均线
-MA10=MA(CLOSE,10)                                     #获取10日均线
+MA5=MA(CLOSE,5)                                       #获取5日均线序列
+MA10=MA(CLOSE,10)                                     #获取10日均线序列
 
-print(f'BTC5日均线{ MA5[-1]}    BTC10日均线 {MA10[-1]}' )
-print('今天5日线是否上穿10日线',RET(CROSS(MA5,MA10)) )
+print('BTC5日均线', MA5[-1] )                          # 只取最后一个数   
+print('BTC10日均线',RET(MA10))                         # RET(MA10) == MA10[-1]
+print('今天5日线是否上穿10日线',RET(CROSS(MA5,MA10)))
 print('最近5天收盘价全都大于10日线吗？',EVERY(CLOSE>MA10,5) )
 
 ```
