@@ -1,7 +1,7 @@
 # MyTT
 各种交易指标的最简单封装，通达信-同花顺指标实现
 
-'''
+```python
 #数字货币行情获取和指标计算演示
 from  hb_hq_api import *
 from  MyTT import *
@@ -20,4 +20,4 @@ print('最近5天收盘价全都大于5日线吗？',EVERY(CLOSE>MA10,5) )
 
 DIF,DEA,MACD=MACD(CLOSE)
 print('MACD值',DIF,DEA,MACD)
-'''
+```
