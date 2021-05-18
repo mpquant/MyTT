@@ -141,6 +141,54 @@ SUM(CLOSE, 10)                            # 求和10天的收盘价
 IF(OPEN > CLOSE, OPEN, CLOSE)        #如果 开盘>收盘  返回OPEN ，否则返回CLOSE
 ```
 
+### 具体指标的实现 （跟多指标可以自行添加）
+
+```python
+def MACD(CLOSE,SHORT=12,LONG=26,M=9):    # EMA的关系，S取120日，和雪球小数点2位相同
+    DIF = EMA(CLOSE,SHORT)-EMA(CLOSE,LONG);  
+    DEA = EMA(DIF,M);      MACD=(DIF-DEA)*2
+    return RD(DIF),RD(DEA),RD(MACD)
+
+def KDJ(CLOSE,HIGH,LOW, N=9,M1=3,M2=3):   
+    RSV = (CLOSE - LLV(LOW, N)) / (HHV(HIGH, N) - LLV(LOW, N)) * 100
+    K = EMA(RSV, (M1*2-1));    D = EMA(K,(M2*2-1));        J=K*3-D*2
+    return K, D, J
+
+def RSI(CLOSE, N=24):      
+    DIF = CLOSE-REF(CLOSE,1) 
+    return RD(SMA(MAX(DIF,0), N) / SMA(ABS(DIF), N) * 100)  
+
+def WR(CLOSE, HIGH, LOW, N=10, N1=6):            #W&R 威廉指标
+    WR = (HHV(HIGH, N) - CLOSE) / (HHV(HIGH, N) - LLV(LOW, N)) * 100
+    WR1 = (HHV(HIGH, N1) - CLOSE) / (HHV(HIGH, N1) - LLV(LOW, N1)) * 100
+    return RD(WR), RD(WR1)
+
+def BIAS(CLOSE,L1=6, L2=12, L3=24):  # BIAS乖离率
+    BIAS1 = (CLOSE - MA(CLOSE, L1)) / MA(CLOSE, L1) * 100
+    BIAS2 = (CLOSE - MA(CLOSE, L2)) / MA(CLOSE, L2) * 100
+    BIAS3 = (CLOSE - MA(CLOSE, L3)) / MA(CLOSE, L3) * 100
+    return RD(BIAS1), RD(BIAS2), RD(BIAS3)
+
+def BOLL(CLOSE,N=20, P=2):            #BOLL布林带    
+    MID = MA(CLOSE, N); 
+    UPPER = MID + STD(CLOSE, N) * P
+    LOWER = MID - STD(CLOSE, N) * P
+    return RD(UPPER), RD(MID), RD(LOWER)    
+
+def PSY(CLOSE,N=12, M=6):  
+    PSY=COUNT(CLOSE>REF(CLOSE,1),N)/N*100
+    PSYMA=MA(PSY,M)
+    return RD(PSY),RD(PSYMA)
+
+
+def CCI(CLOSE,HIGH,LOW,N=14):  
+    TP=(HIGH+LOW+CLOSE)/3
+    return (TP-MA(TP,N))/(0.015*AVEDEV(TP,N))
+        
+def ATR(CLOSE,HIGH,LOW, N=20):   #真实波动N日平均值
+    TR = MAX(MAX((HIGH - LOW), ABS(REF(CLOSE, 1) - HIGH)), ABS(REF(CLOSE, 1) - LOW))
+    return MA(TR, N)
+```
 
 
 
