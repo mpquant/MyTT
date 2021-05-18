@@ -53,12 +53,47 @@ print('最近5天收盘价全都大于10日线吗？',EVERY(CLOSE>MA10,5) )
 
 ```
 
-### MyTT库中的工具函数
+
+### MyTT库中的部分工具函数
 * n天前的数据：REF
 
 ```python
-REF(CLOSE, 10)  # 10天前的收盘价
+REF(CLOSE, 1)              # 截止到昨天收盘价 序列
 ```
+* 从序列中取最后N个数据：RET
+
+```python
+RET(CLOSE, 1)             # 最近一天的收盘价，单个数据
+```
+* 从序列中所有元素四舍五入：RD
+
+```python
+RD(CLOSE)                    # 默认返回3位小数
+```
+
+* 加权移动平均计算：EMA
+
+```python
+EMA(CLOSE, 5)            # 为了精度 ，  EMA至少需要120周期   
+```
+
+* 中国式的SMA计算：SMA
+
+```python
+SMA(CLOSE, 5)            # 为了精度 ，  SMA至少需要120周期   
+```
+*  返回序列标准差：STD
+
+```python
+STD(CLOSE, 5)             # 返回收盘价5日内标准差
+```
+
+*  平均绝对偏差：AVEDEV
+
+```python
+AVEDEV(CLOSE, 5)    # 序列与其平均值的绝对差的平均值
+```
+
 * 金叉判断：CROSS
 
 ```python
@@ -74,6 +109,17 @@ MAX(OPEN, CLOSE )                       # K线实体的最高价
 ```python
 COUNT(CLOSE > OPEN, 10)           # 最近10天收阳线的天数
 ```
+* n天内全部满足条件的天数：EVERY
+
+```python
+EVERY(CLOSE >OPEN, 5)           # 最近5天都是收阳线
+```
+* n天内是否至少满足条件一次：EXIST
+
+```python
+EXIST(CLOSE >OPEN, 5)           # 最近5天是否有一天收阳线
+```
+
 * n天内最大值：HHV
 
 ```python
@@ -94,6 +140,9 @@ SUM(CLOSE, 10)                            # 求和10天的收盘价
 ```python
 IF(OPEN > CLOSE, OPEN, CLOSE)        #如果 开盘>收盘  返回OPEN ，否则返回CLOSE
 ```
+
+
+
 
 ## 需安装第三方库
 * requests
