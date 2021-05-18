@@ -22,7 +22,7 @@ MyTT将通达信,同花顺,文华麦语言等指标公式indicators,最简移植
 
 #数字货币行情获取和指标计算演示
 from  hb_hq_api import *         #数字货币行情库
-from  MyTT import *                #myTT指标库
+from  MyTT import *              #myTT麦语言工具函数指标库
 
 #获取btc.usdt交易对120日的数据
 df=get_price('btc.usdt',count=120,frequency='1d');     # ‘4h’是4小时
