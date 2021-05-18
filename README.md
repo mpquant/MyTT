@@ -1,5 +1,5 @@
 # MyTT
-各种交易指标的最简单封装，通达信-同花顺指标实现
+MyTT将通达信,同花顺,文华麦语言等指标公式indicators,最简移植到Python中,核心库单个文件，仅百行代码,实现所有常见指标MACD,RSI,BOLL,ATR,KDJ,CCI,PSY等,全部基于numpy和pandas的函数封装，简洁且高性能，能非常方便的应用在各自股市分析，数字货币量化等领域
 
 ```python
 
