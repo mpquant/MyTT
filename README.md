@@ -141,10 +141,10 @@ SUM(CLOSE, 10)                            # 求和10天的收盘价
 IF(OPEN > CLOSE, OPEN, CLOSE)        #如果 开盘>收盘  返回OPEN ，否则返回CLOSE
 ```
 
-### 具体指标的实现，全部基于MyTT库中的工具函数 （更指标可以自行添加）
+### 具体指标的实现，全部基于MyTT库中的工具函数 （更多指标可以自行添加）
 
 ```python
-def MACD(CLOSE,SHORT=12,LONG=26,M=9):    # EMA的关系，S取120日，和雪球小数点2位相同
+def MACD(CLOSE,SHORT=12,LONG=26,M=9):    # EMA的关系，CLOSE取120日，结果能精确到雪球小数点2位
     DIF = EMA(CLOSE,SHORT)-EMA(CLOSE,LONG);  
     DEA = EMA(DIF,M);      MACD=(DIF-DEA)*2
     return RD(DIF),RD(DEA),RD(MACD)
