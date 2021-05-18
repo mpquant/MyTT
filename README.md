@@ -2,6 +2,7 @@
 各种交易指标的最简单封装，通达信-同花顺指标实现
 
 ```python
+
 #数字货币行情获取和指标计算演示
 from  hb_hq_api import *
 from  MyTT import *
@@ -21,3 +22,17 @@ print('最近5天收盘价全都大于5日线吗？',EVERY(CLOSE>MA10,5) )
 DIF,DEA,MACD=MACD(CLOSE)
 print('MACD值',DIF,DEA,MACD)
 ```
+
+## 需安装第三方库
+* requests
+* pandas
+ 
+----------------------------------------------------
+### 巴特量化
+* 数字货币 股市量化工具 行情系统软件开发
+
+* BTC虚拟货币量化交易策略开发 自动化交易策略运行
+
+----------------------------------------------------
+
+![加入群聊](https://github.com/mpquant/huobi_intf/blob/main/img/qrcode.png) 
