@@ -76,7 +76,7 @@ def RSI(CLOSE, N=24):
     DIF = CLOSE-REF(CLOSE,1) 
     return RD(SMA(MAX(DIF,0), N) / SMA(ABS(DIF), N) * 100)  
 
-def WR(CLOSE, N=10, N1=6):            #W&R 威廉指标
+def WR(CLOSE, HIGH, LOW, N=10, N1=6):            #W&R 威廉指标
     WR = (HHV(HIGH, N) - CLOSE) / (HHV(HIGH, N) - LLV(LOW, N)) * 100
     WR1 = (HHV(HIGH, N1) - CLOSE) / (HHV(HIGH, N1) - LLV(LOW, N1)) * 100
     return RD(WR), RD(WR1)
