@@ -240,7 +240,7 @@ ADXR = (ADX + REF(ADX, M2)) / 2
 print(DI1, DI2, ADX, ADXR)
 ```
 
-### BOLL带指标数据获取和做图演示
+### BOLL带指标数据获取和做图演示 (上证综指)
 
 ```python
 up,mid,lower=BOLL(CLOSE)                                        #获取布林带数据 
@@ -250,7 +250,7 @@ plt.plot(CLOSE,label='上证');    plt.plot(up,label='up');        #画图显示
 plt.plot(mid,label='mid');      plt.plot(lower,label='lower');
 
 ```
-<div  align="center"> <img src="/img/boll.png" width = "1024" height = "400" alt="Boll线" /> </div>
+<div  align="center"> <img src="/img/boll.png" width = "960" height = "400" alt="Boll线" /> </div>
 
 
 
