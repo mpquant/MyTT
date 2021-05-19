@@ -250,8 +250,8 @@ plt.plot(CLOSE,label='上证');    plt.plot(up,label='up');        #画图显示
 plt.plot(mid,label='mid');      plt.plot(lower,label='lower');
 
 ```
+<div  align="center"> <img src="/img/boll.png" width = "600" height = "400" alt="Boll线" /> </div>
 
-![boll](https://github.com/mpquant/MyTT/blob/main/img/boll.png) 
 
 
 ## 需安装第三方库
