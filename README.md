@@ -55,7 +55,7 @@ print('最近5天收盘价全都大于10日线吗？',EVERY(CLOSE>MA10,5) )
 
 
 ### MyTT库中的部分工具函数
-* n天前的数据：REF
+* n天前的数据：`REF`
 
 ```python
 REF(CLOSE, 1)              # 截止到昨天收盘价 序列
