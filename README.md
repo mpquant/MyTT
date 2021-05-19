@@ -240,6 +240,18 @@ ADXR = (ADX + REF(ADX, M2)) / 2
 print(DI1, DI2, ADX, ADXR)
 ```
 
+### BOLL带获取和做图
+
+```python
+up,mid,lower=BOLL(CLOSE)                                        #获取布林带数据 
+
+plt.figure(figsize=(15,8))  
+plt.plot(CLOSE,label='上证');    plt.plot(up,label='up');        #画图显示 
+plt.plot(mid,label='mid');      plt.plot(lower,label='lower');
+
+```
+
+![boll](https://github.com/mpquant/MyTT/blob/main/img/boll.png) 
 
 
 ## 需安装第三方库
