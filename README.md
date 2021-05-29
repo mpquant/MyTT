@@ -254,8 +254,7 @@ plt.plot(mid,label='mid');      plt.plot(lower,label='lower');
 
 
 
-## 需安装第三方库
-* requests
+## 需安装第三方库（无需ta-lib库，所有指标实现仅需要安装pandas既可）
 * pandas
  
 ----------------------------------------------------
