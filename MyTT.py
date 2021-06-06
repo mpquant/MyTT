@@ -48,12 +48,16 @@ def AVEDEV(S,N):      #平均绝对偏差  (序列与其平均值的绝对差的
 
     #--------------------------------------------------------------------        
 
-def COUNT(S_BOOL, N):                   # COUNT(C>O, N):  最近N天满足S_BOO的天数  True的天数
+def COUNT(S_BOOL, N):                  # COUNT(CLOSE>O, N):  最近N天满足S_BOO的天数  True的天数
     return SUM(S_BOOL,N)    
 
-def EVERY(S_BOOL, N):                  # EVERY(C>O, 5)   最近N天是否都是True
+def EVERY(S_BOOL, N):                  # EVERY(CLOSE>O, 5)   最近N天是否都是True
     R=SUM(S_BOOL, N)
     return  IF(R==N, True, False)
+  
+def LAST(S_BOOL, A, B):                #从前A日到前B日一直满足S_BOOL条件   
+    if A<B: A=B                        #要求A>B    例：LAST(CLOSE>OPEN,5,3)  5天前到3天前是否都收阳线     
+    return S_BOOL[-A:-B].sum()==(A-B)  #返回单个布尔值    
 
 def EXIST(S_BOOL, N=5):                # EXIST(CLOSE>3010, N=5)  n日内是否存在一天大于3000点
     R=SUM(S_BOOL,N)    
