@@ -116,14 +116,14 @@ def ATR(CLOSE,HIGH,LOW, N=20):                    #真实波动N日平均值
 def BBI(CLOSE,M1=3,M2=6,M3=12,M4=20):             #BBI多空指标   
     return (MA(CLOSE,M1)+MA(CLOSE,M2)+MA(CLOSE,M3)+MA(CLOSE,M4))/4    
 
-def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):               #动向指标
+def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):               #动向指标：结果和同花顺，通达信完全一致
     TR = SUM(MAX(MAX(HIGH - LOW, ABS(HIGH - REF(CLOSE, 1))), ABS(LOW - REF(CLOSE, 1))), M1)
     HD = HIGH - REF(HIGH, 1);     LD = REF(LOW, 1) - LOW
     DMP = SUM(IF((HD > 0) & (HD > LD), HD, 0), M1)
     DMM = SUM(IF((LD > 0) & (LD > HD), LD, 0), M1)
-    DI1 = DMP * 100 / TR;         DI2 = DMM * 100 / TR
-    ADX = MA(ABS(DI2 - DI1) / (DI1 + DI2) * 100, M2)
+    PDI = DMP * 100 / TR;         MDI = DMM * 100 / TR
+    ADX = MA(ABS(MDI - PDI) / (PDI + MDI) * 100, M2)
     ADXR = (ADX + REF(ADX, M2)) / 2
-    return PDI, MDI, ADX, ADXR    
+    return PDI, MDI, ADX, ADXR  
   
   #望大家能提交更多指标和函数  https://github.com/mpquant/MyTT
