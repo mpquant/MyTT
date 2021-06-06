@@ -13,36 +13,36 @@ def MIN(S1,S2):  return np.minimum(S1,S2)    #序列min
 def MA(S,N):           #求序列的N日平均值，返回序列                    
     return pd.Series(S).rolling(N).mean().values
 
-def REF(S, N=1):       # 对序列整体下移动N,返回序列(shift后会产生NAN)    
+def REF(S, N=1):       #对序列整体下移动N,返回序列(shift后会产生NAN)    
     return pd.Series(S).shift(N).values  
 
-def DIFF(S, N=1):  #前一个值减后一个值,前面会产生nan 
+def DIFF(S, N=1):      #前一个值减后一个值,前面会产生nan 
     return pd.Series(S).diff(N)  #np.diff(S)直接删除nan，会少一行
 
 def STD(S,N):           #求序列的N日标准差，返回序列    
     return  pd.Series(S).rolling(N).std(ddof=0).values     
 
-def IF(S_BOOL,S_TRUE,S_FALSE):         # res=S_TRUE if S_BOOL==True  else  S_FALSE
+def IF(S_BOOL,S_TRUE,S_FALSE):          #序列布尔判断 res=S_TRUE if S_BOOL==True  else  S_FALSE
     return np.where(S_BOOL, S_TRUE, S_FALSE)
 
-def SUM(S, N):           #对序列求N天累计和，返回序列         
+def SUM(S, N):                          #对序列求N天累计和，返回序列         
     return pd.Series(S).rolling(N).sum().values
 
 def HHV(S,N):                           # HHV(C, 5)  # 最近5天收盘最高价        
     return pd.Series(S).rolling(N).max().values
 
-def LLV(S,N):                          # LLV(C, 5)  # 最近5天收盘最低价     
+def LLV(S,N):                           # LLV(C, 5)  # 最近5天收盘最低价     
     return pd.Series(S).rolling(N).min().values
 
-def EMA(S,N):  #为了精度 S>4*N  EMA至少需要120周期       
+def EMA(S,N):         #指数移动平均,为了精度 S>4*N  EMA至少需要120周期       
     return pd.Series(S).ewm(span=N, adjust=False).mean().values    
 
-def SMA(S, N, M=1):  #中国式的SMA,至少需要120周期才精确        
-    K = pd.Series(S).rolling(N).mean()    #先求出平均值
+def SMA(S, N, M=1):   #中国式的SMA,至少需要120周期才精确         
+    K = pd.Series(S).rolling(N).mean()    #先求出平均值 (下面如果有不用循环的办法，能提高性能，望告知)
     for i in range(N+1, len(S)):  K[i] = (M * S[i] + (N -M) * K[i-1]) / N  # 因为要取K[i-1]，所以 range(N+1, len(S))        
     return K
 
-def AVEDEV(S,N):  # 平均绝对偏差  (序列与其平均值的绝对差的平均值)   
+def AVEDEV(S,N):      #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     avedev=pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean())    
     return avedev.values
 
@@ -63,17 +63,18 @@ def BARSLAST(S_BOOL):                  #上一次条件成立到当前的周期
     M=np.argwhere(S_BOOL);             # BARSLAST(CLOSE/REF(CLOSE)>=1.1) 上一次涨停到今天的天数
     return len(S_BOOL)-int(M[-1])-1  if M.size>0 else -1
 
-def CROSS(S1,S2):                      # 判断穿越 CROSS(MA(C,5),MA(C,10))               
-    CROSS_BOOL=IF(S1>S2, True ,False)   #;print(CROSS_BOOL)
-    return COUNT(CROSS_BOOL>0,2)==1    # 上穿：昨天0 今天1   下穿：昨天1 今天0
+def CROSS(S1,S2):                      #判断穿越 CROSS(MA(C,5),MA(C,10))               
+    CROSS_BOOL=IF(S1>S2, True ,False)   
+    return COUNT(CROSS_BOOL>0,2)==1    #上穿：昨天0 今天1   下穿：昨天1 今天0
+
 
 #-----------------------------------下面是具体指标-------------------------------------
-def MACD(CLOSE,SHORT=12,LONG=26,M=9):    # EMA的关系，S取120日，和雪球小数点2位相同
+def MACD(CLOSE,SHORT=12,LONG=26,M=9):            # EMA的关系，S取120日，和雪球小数点2位相同
     DIF = EMA(CLOSE,SHORT)-EMA(CLOSE,LONG);  
     DEA = EMA(DIF,M);      MACD=(DIF-DEA)*2
     return RD(DIF),RD(DEA),RD(MACD)
 
-def KDJ(CLOSE,HIGH,LOW, N=9,M1=3,M2=3):   
+def KDJ(CLOSE,HIGH,LOW, N=9,M1=3,M2=3):         # KDJ指标
     RSV = (CLOSE - LLV(LOW, N)) / (HHV(HIGH, N) - LLV(LOW, N)) * 100
     K = EMA(RSV, (M1*2-1));    D = EMA(K,(M2*2-1));        J=K*3-D*2
     return K, D, J
@@ -87,13 +88,13 @@ def WR(CLOSE, HIGH, LOW, N=10, N1=6):            #W&R 威廉指标
     WR1 = (HHV(HIGH, N1) - CLOSE) / (HHV(HIGH, N1) - LLV(LOW, N1)) * 100
     return RD(WR), RD(WR1)
 
-def BIAS(CLOSE,L1=6, L2=12, L3=24):  # BIAS乖离率
+def BIAS(CLOSE,L1=6, L2=12, L3=24):              # BIAS乖离率
     BIAS1 = (CLOSE - MA(CLOSE, L1)) / MA(CLOSE, L1) * 100
     BIAS2 = (CLOSE - MA(CLOSE, L2)) / MA(CLOSE, L2) * 100
     BIAS3 = (CLOSE - MA(CLOSE, L3)) / MA(CLOSE, L3) * 100
     return RD(BIAS1), RD(BIAS2), RD(BIAS3)
 
-def BOLL(CLOSE,N=20, P=2):            #BOLL布林带    
+def BOLL(CLOSE,N=20, P=2):                       #BOLL指标，布林带    
     MID = MA(CLOSE, N); 
     UPPER = MID + STD(CLOSE, N) * P
     LOWER = MID - STD(CLOSE, N) * P
@@ -108,14 +109,14 @@ def CCI(CLOSE,HIGH,LOW,N=14):
     TP=(HIGH+LOW+CLOSE)/3
     return (TP-MA(TP,N))/(0.015*AVEDEV(TP,N))
         
-def ATR(CLOSE,HIGH,LOW, N=20):   #真实波动N日平均值
+def ATR(CLOSE,HIGH,LOW, N=20):                    #真实波动N日平均值
     TR = MAX(MAX((HIGH - LOW), ABS(REF(CLOSE, 1) - HIGH)), ABS(REF(CLOSE, 1) - LOW))
     return MA(TR, N)
 
-def BBI(CLOSE,M1=3,M2=6,M3=12,M4=20):    #BBI多空指标   
+def BBI(CLOSE,M1=3,M2=6,M3=12,M4=20):             #BBI多空指标   
     return (MA(CLOSE,M1)+MA(CLOSE,M2)+MA(CLOSE,M3)+MA(CLOSE,M4))/4    
 
-def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):      #动向指标
+def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):               #动向指标
     TR = SUM(MAX(MAX(HIGH - LOW, ABS(HIGH - REF(CLOSE, 1))), ABS(LOW - REF(CLOSE, 1))), M1)
     HD = HIGH - REF(HIGH, 1);     LD = REF(LOW, 1) - LOW
     DMP = SUM(IF((HD > 0) & (HD > LD), HD, 0), M1)
@@ -124,3 +125,5 @@ def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):      #动向指标
     ADX = MA(ABS(DI2 - DI1) / (DI1 + DI2) * 100, M2)
     ADXR = (ADX + REF(ADX, M2)) / 2
     return PDI, MDI, ADX, ADXR    
+  
+  #望大家能提交更多指标和函数  https://github.com/mpquant/MyTT
