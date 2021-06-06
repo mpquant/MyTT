@@ -128,7 +128,7 @@ EXIST(CLOSE >OPEN, 5)                   #最近5天是否有一天收阳线
 * 上一次条件成立到当前的周期：BARSLAST
 
 ```python
-BARSLAST(CLOSE/REF(CLOSE)>=1.1)   #上一次涨停到今天的天数
+BARSLAST(CLOSE/REF(CLOSE)>=1.1)         #上一次涨停到今天的天数
 ```
 
 *  n天内最大值：HHV
