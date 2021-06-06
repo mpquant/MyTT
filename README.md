@@ -102,43 +102,49 @@ AVEDEV(CLOSE, 5)    # 序列与其平均值的绝对差的平均值
 * 金叉判断：CROSS
 
 ```python
-CROSS(MA(CLOSE, 5), MA(CLOSE, 10))    # 5日均线上穿10日均线
+CROSS(MA(CLOSE, 5), MA(CLOSE, 10))       #5日均线上穿10日均线
 ```
 * 两个序列取最大值,最小值：MAX    MIN
 
 ```python
-MAX(OPEN, CLOSE )                       # K线实体的最高价
+MAX(OPEN, CLOSE )                       #K线实体的最高价
 ```
 * n天内满足条件的天数：COUNT
 
 ```python
-COUNT(CLOSE > OPEN, 10)           # 最近10天收阳线的天数
+COUNT(CLOSE > OPEN, 10)                 #最近10天收阳线的天数
 ```
 * n天内全部满足条件的天数：EVERY
 
 ```python
-EVERY(CLOSE >OPEN, 5)           # 最近5天都是收阳线
+EVERY(CLOSE >OPEN, 5)                   #最近5天都是收阳线
 ```
 * n天内是否至少满足条件一次：EXIST
 
 ```python
-EXIST(CLOSE >OPEN, 5)           # 最近5天是否有一天收阳线
+EXIST(CLOSE >OPEN, 5)                   #最近5天是否有一天收阳线
 ```
 
-* n天内最大值：HHV
+* 上一次条件成立到当前的周期：BARSLAST
 
 ```python
-HHV(MAX(OPEN, CLOSE), 20)        # 最近20天K线实体的最高价
+BARSLAST(CLOSE/REF(CLOSE)>=1.1)   #上一次涨停到今天的天数
+```
+
+*  n天内最大值：HHV
+
+```python
+HHV(MAX(OPEN, CLOSE), 20)               #最近20天K线实体的最高价
 ```
 * n天内最小值：LLV
 
 ```python
-LLV(MIN(OPEN, CLOSE), 60)          # 最近60天K线实体的最低价
+LLV(MIN(OPEN, CLOSE), 60)              #最近60天K线实体的最低价
 ```
 * 求和n日数据 SUM
 
 ```python
-SUM(CLOSE, 10)                            # 求和10天的收盘价
+SUM(CLOSE, 10)                         #求和10天的收盘价
 ```
 * 条件 IF
 
@@ -210,6 +216,24 @@ def ATR(CLOSE,HIGH,LOW, N=20):   #真实波动N日平均值
     return MA(TR, N)
 ```
 
+```python
+def BBI(CLOSE,M1=3,M2=6,M3=12,M4=20):    #BBI多空指标   
+    return (MA(CLOSE,M1)+MA(CLOSE,M2)+MA(CLOSE,M3)+MA(CLOSE,M4))/4  
+```
+
+```python
+#DMI指标：如果用TALib库算出来的结果，和同花顺通达信等软件的结果不一样，是因为同花顺的公式和 TALib 的计算公式不一样
+def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):      #动向指标：结果和同花顺，通达信完全一致
+    TR = SUM(MAX(MAX(HIGH - LOW, ABS(HIGH - REF(CLOSE, 1))), ABS(LOW - REF(CLOSE, 1))), M1)
+    HD = HIGH - REF(HIGH, 1);     LD = REF(LOW, 1) - LOW
+    DMP = SUM(IF((HD > 0) & (HD > LD), HD, 0), M1)
+    DMM = SUM(IF((LD > 0) & (LD > HD), LD, 0), M1)
+    DI1 = DMP * 100 / TR;         DI2 = DMM * 100 / TR
+    ADX = MA(ABS(DI2 - DI1) / (DI1 + DI2) * 100, M2)
+    ADXR = (ADX + REF(ADX, M2)) / 2
+    return PDI, MDI, ADX, ADXR    
+```
+
 ### 因为语法的问题 =: 是不能用了，python就是=号 ，条件与是& ，条件或是|
 ```python
 
@@ -221,24 +245,6 @@ def ATR(CLOSE,HIGH,LOW, N=20):   #真实波动N日平均值
 
 ```
 
-### 自定义指标示例
-对于 DMI 这个指标，你会发现 TALib 算出来的结果，和同花顺等软件的结果不一样，是因为同花顺的公式和 TALib 的计算公式不一样，对于这种情况，只要把同花顺的公式搬过来，就可以算出和同花顺一样的结果。
-
-```python
-M1, M2 = 14, 6
-TR = SUM(MAX(MAX(HIGH - LOW, ABS(HIGH - REF(CLOSE, 1))), ABS(LOW - REF(CLOSE, 1))), M1)
-HD = HIGH - REF(HIGH, 1)
-LD = REF(LOW, 1) - LOW
-
-DMP = SUM(IF((HD > 0) & (HD > LD), HD, 0), M1)
-DMM = SUM(IF((LD > 0) & (LD > HD), LD, 0), M1)
-DI1 = DMP * 100 / TR
-DI2 = DMM * 100 / TR
-ADX = MA(ABS(DI2 - DI1) / (DI1 + DI2) * 100, M2)
-ADXR = (ADX + REF(ADX, M2)) / 2
-
-print(DI1, DI2, ADX, ADXR)
-```
 
 ### BOLL带指标数据获取和做图演示 (上证综指)
 

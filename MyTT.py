@@ -1,4 +1,5 @@
 # MyTT 麦语言-通达信-同花顺指标实现    https://github.com/mpquant/MyTT
+# V2.1 2021-6-6 新增 BARSLAST函数
   
 import numpy as np; import pandas as pd
 
@@ -44,6 +45,7 @@ def SMA(S, N, M=1):  #中国式的SMA,至少需要120周期才精确
 def AVEDEV(S,N):  # 平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     avedev=pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean())    
     return avedev.values
+
     #--------------------------------------------------------------------        
 
 def COUNT(S_BOOL, N):                   # COUNT(C>O, N):  最近N天满足S_BOO的天数  True的天数
@@ -56,6 +58,10 @@ def EVERY(S_BOOL, N):                  # EVERY(C>O, 5)   最近N天是否都是T
 def EXIST(S_BOOL, N=5):                # EXIST(CLOSE>3010, N=5)  n日内是否存在一天大于3000点
     R=SUM(S_BOOL,N)    
     return IF(R>0, True ,False)
+
+def BARSLAST(S_BOOL):                  #上一次条件成立到当前的周期  
+    M=np.argwhere(S_BOOL);             # BARSLAST(CLOSE/REF(CLOSE)>=1.1) 上一次涨停到今天的天数
+    return len(S_BOOL)-int(M[-1])-1  if M.size>0 else -1
 
 def CROSS(S1,S2):                      # 判断穿越 CROSS(MA(C,5),MA(C,10))               
     CROSS_BOOL=IF(S1>S2, True ,False)   #;print(CROSS_BOOL)
@@ -98,7 +104,6 @@ def PSY(CLOSE,N=12, M=6):
     PSYMA=MA(PSY,M)
     return RD(PSY),RD(PSYMA)
 
-
 def CCI(CLOSE,HIGH,LOW,N=14):  
     TP=(HIGH+LOW+CLOSE)/3
     return (TP-MA(TP,N))/(0.015*AVEDEV(TP,N))
@@ -106,6 +111,16 @@ def CCI(CLOSE,HIGH,LOW,N=14):
 def ATR(CLOSE,HIGH,LOW, N=20):   #真实波动N日平均值
     TR = MAX(MAX((HIGH - LOW), ABS(REF(CLOSE, 1) - HIGH)), ABS(REF(CLOSE, 1) - LOW))
     return MA(TR, N)
-    
 
-    
+def BBI(CLOSE,M1=3,M2=6,M3=12,M4=20):    #BBI多空指标   
+    return (MA(CLOSE,M1)+MA(CLOSE,M2)+MA(CLOSE,M3)+MA(CLOSE,M4))/4    
+
+def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):      #动向指标
+    TR = SUM(MAX(MAX(HIGH - LOW, ABS(HIGH - REF(CLOSE, 1))), ABS(LOW - REF(CLOSE, 1))), M1)
+    HD = HIGH - REF(HIGH, 1);     LD = REF(LOW, 1) - LOW
+    DMP = SUM(IF((HD > 0) & (HD > LD), HD, 0), M1)
+    DMM = SUM(IF((LD > 0) & (LD > HD), LD, 0), M1)
+    DI1 = DMP * 100 / TR;         DI2 = DMM * 100 / TR
+    ADX = MA(ABS(DI2 - DI1) / (DI1 + DI2) * 100, M2)
+    ADXR = (ADX + REF(ADX, M2)) / 2
+    return PDI, MDI, ADX, ADXR    
