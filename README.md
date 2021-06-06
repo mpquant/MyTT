@@ -119,6 +119,12 @@ COUNT(CLOSE > OPEN, 10)                 #最近10天收阳线的天数
 ```python
 EVERY(CLOSE >OPEN, 5)                   #最近5天都是收阳线
 ```
+* 从前A日到前B日一直满足条件 ：LAST
+
+```python
+LAST(CLOSE>OPEN,5,3)                    #5天前到3天前是否都收阳线
+```
+
 * n天内是否至少满足条件一次：EXIST
 
 ```python
