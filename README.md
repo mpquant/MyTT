@@ -222,7 +222,7 @@ def BBI(CLOSE,M1=3,M2=6,M3=12,M4=20):    #BBI多空指标
 ```
 
 ```python
-#DMI指标：如果用TALib库算出来的结果，和同花顺通达信等软件的结果不一样，是因为同花顺的公式和 TALib 的计算公式不一样
+#DMI指标：用TALib库算出来的结果会发现和同花顺通达信等软件的结果不一样，是因为同花顺的公式和TA-Lib的计算公式不一样
 def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):      #动向指标：结果和同花顺，通达信完全一致
     TR = SUM(MAX(MAX(HIGH - LOW, ABS(HIGH - REF(CLOSE, 1))), ABS(LOW - REF(CLOSE, 1))), M1)
     HD = HIGH - REF(HIGH, 1);     LD = REF(LOW, 1) - LOW
