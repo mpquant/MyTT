@@ -228,8 +228,8 @@ def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):      #动向指标：结果和同花顺，�
     HD = HIGH - REF(HIGH, 1);     LD = REF(LOW, 1) - LOW
     DMP = SUM(IF((HD > 0) & (HD > LD), HD, 0), M1)
     DMM = SUM(IF((LD > 0) & (LD > HD), LD, 0), M1)
-    DI1 = DMP * 100 / TR;         DI2 = DMM * 100 / TR
-    ADX = MA(ABS(DI2 - DI1) / (DI1 + DI2) * 100, M2)
+    PDI = DMP * 100 / TR;         MDI = DMM * 100 / TR
+    ADX = MA(ABS(MDI - PDI) / (PDI + MDI) * 100, M2)
     ADXR = (ADX + REF(ADX, M2)) / 2
     return PDI, MDI, ADX, ADXR    
 ```
