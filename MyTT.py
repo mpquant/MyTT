@@ -69,8 +69,7 @@ def BARSLAST(S_BOOL):                  #上一次条件成立到当前的周期
     return len(S_BOOL)-int(M[-1])-1  if M.size>0 else -1
 
 def SLOPE(S,N,RS=False):               #返S序列N周期回线性回归斜率 (默认只返回斜率,不返回整个直线序列)
-    M=pd.Series(S[-N:]);                
-    poly = np.polyfit(M.index, M.values,deg=1);    Y=np.polyval(poly, M.index); 
+    M=pd.Series(S[-N:]);   poly = np.polyfit(M.index, M.values,deg=1);    Y=np.polyval(poly, M.index); 
     if RS: return Y[1]-Y[0],Y
     return Y[1]-Y[0]
 
