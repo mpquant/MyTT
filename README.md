@@ -290,3 +290,6 @@ plt.plot(mid,label='mid');      plt.plot(lower,label='lower');
 ----------------------------------------------------
 
 ![加入群聊](https://github.com/mpquant/huobi_intf/blob/main/img/qrcode.png) 
+
+> #### 股市程序化交易大群,数字货币量化交易探讨, 圈内大咖量化策略分享
+> #### 全是干货，无闲聊 ，物以类聚,人以群分，一起感受思维碰撞的力量!
