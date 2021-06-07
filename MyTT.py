@@ -1,5 +1,6 @@
 # MyTT 麦语言-通达信-同花顺指标实现    https://github.com/mpquant/MyTT
 # V2.1 2021-6-6 新增 BARSLAST函数
+# V2.2 2021-6-8 新增 SLOPE,FORCAST线性回归，和回归预测函数
   
 import numpy as np; import pandas as pd
 
