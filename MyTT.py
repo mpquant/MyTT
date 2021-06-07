@@ -67,6 +67,16 @@ def BARSLAST(S_BOOL):                  #上一次条件成立到当前的周期
     M=np.argwhere(S_BOOL);             # BARSLAST(CLOSE/REF(CLOSE)>=1.1) 上一次涨停到今天的天数
     return len(S_BOOL)-int(M[-1])-1  if M.size>0 else -1
 
+def SLOPE(S,N,RS=False):               #返S序列N周期回线性回归斜率 (默认只返回斜率,不返回整个直线序列)
+    M=pd.Series(S[-N:]);                
+    poly = np.polyfit(M.index, M.values,deg=1);    Y=np.polyval(poly, M.index); 
+    if RS: return Y[1]-Y[0],Y
+    return Y[1]-Y[0]
+
+def FORCAST(S,N):                      #返S序列N周期回线性回归后的预测值
+    K,Y=SLOPE(S,N,RS=True)
+    return Y[-1]+K
+  
 def CROSS(S1,S2):                      #判断穿越 CROSS(MA(C,5),MA(C,10))               
     CROSS_BOOL=IF(S1>S2, True ,False)   
     return COUNT(CROSS_BOOL>0,2)==1    #上穿：昨天0 今天1   下穿：昨天1 今天0
