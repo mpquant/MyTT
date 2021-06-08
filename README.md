@@ -172,20 +172,20 @@ def KDJ(CLOSE,HIGH,LOW, N=9,M1=3,M2=3):
 ```
 
 ```python
-def RSI(CLOSE, N=24):      
+def RSI(CLOSE, N=24):                     #RSI指标
     DIF = CLOSE-REF(CLOSE,1) 
     return RD(SMA(MAX(DIF,0), N) / SMA(ABS(DIF), N) * 100)  
 ```
 
 ```python
-def WR(CLOSE, HIGH, LOW, N=10, N1=6):            #W&R 威廉指标
+def WR(CLOSE, HIGH, LOW, N=10, N1=6):    #W&R 威廉指标
     WR = (HHV(HIGH, N) - CLOSE) / (HHV(HIGH, N) - LLV(LOW, N)) * 100
     WR1 = (HHV(HIGH, N1) - CLOSE) / (HHV(HIGH, N1) - LLV(LOW, N1)) * 100
     return RD(WR), RD(WR1)
 ```
 
 ```python
-def BIAS(CLOSE,L1=6, L2=12, L3=24):  # BIAS乖离率
+def BIAS(CLOSE,L1=6, L2=12, L3=24):      #BIAS乖离率
     BIAS1 = (CLOSE - MA(CLOSE, L1)) / MA(CLOSE, L1) * 100
     BIAS2 = (CLOSE - MA(CLOSE, L2)) / MA(CLOSE, L2) * 100
     BIAS3 = (CLOSE - MA(CLOSE, L3)) / MA(CLOSE, L3) * 100
@@ -193,7 +193,7 @@ def BIAS(CLOSE,L1=6, L2=12, L3=24):  # BIAS乖离率
 ```
 
 ```python
-def BOLL(CLOSE,N=20, P=2):            #BOLL布林带    
+def BOLL(CLOSE,N=20, P=2):                #BOLL布林带    
     MID = MA(CLOSE, N); 
     UPPER = MID + STD(CLOSE, N) * P
     LOWER = MID - STD(CLOSE, N) * P
@@ -201,20 +201,20 @@ def BOLL(CLOSE,N=20, P=2):            #BOLL布林带
 ```
 
 ```python
-def PSY(CLOSE,N=12, M=6):  
+def PSY(CLOSE,N=12, M=6):                 #PSY心理线指标
     PSY=COUNT(CLOSE>REF(CLOSE,1),N)/N*100
     PSYMA=MA(PSY,M)
     return RD(PSY),RD(PSYMA)
 ```
 
 ```python
-def CCI(CLOSE,HIGH,LOW,N=14):  
+def CCI(CLOSE,HIGH,LOW,N=14):            #CCI顺势指标
     TP=(HIGH+LOW+CLOSE)/3
     return (TP-MA(TP,N))/(0.015*AVEDEV(TP,N))
 ```
 
 ```python
-def ATR(CLOSE,HIGH,LOW, N=20):   #真实波动N日平均值
+def ATR(CLOSE,HIGH,LOW, N=20):           #真实波动N日平均值
     TR = MAX(MAX((HIGH - LOW), ABS(REF(CLOSE, 1) - HIGH)), ABS(REF(CLOSE, 1) - LOW))
     return MA(TR, N)
 ```
@@ -226,6 +226,7 @@ def BBI(CLOSE,M1=3,M2=6,M3=12,M4=20):    #BBI多空指标
 
 ```python
 #DMI指标：用TALib库算出来的结果会发现和同花顺通达信等软件的结果不一样，是因为同花顺的公式和TA-Lib的计算公式不一样
+
 def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):      #动向指标：结果和同花顺，通达信完全一致
     TR = SUM(MAX(MAX(HIGH - LOW, ABS(HIGH - REF(CLOSE, 1))), ABS(LOW - REF(CLOSE, 1))), M1)
     HD = HIGH - REF(HIGH, 1);     LD = REF(LOW, 1) - LOW
@@ -238,7 +239,7 @@ def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):      #动向指标：结果和同花顺，�
 ```
 
 ```python
-def TAQ(HIGH,LOW,N):                     #唐安奇通道交易指标，大道至简，穿越牛熊
+def TAQ(HIGH,LOW,N):                     #唐安奇通道交易指标，大道至简，能穿越牛熊
     UP=HHV(HIGH,N);    DOWN=LLV(LOW,N);    MID=(UP+DOWN)/2
     return UP,MID,DOWN
 ```
