@@ -140,7 +140,7 @@ def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):               #动向指标：结果和同�
     ADXR = (ADX + REF(ADX, M2)) / 2
     return PDI, MDI, ADX, ADXR  
 
-def TAQ(HIGH,LOW,N):                     #唐安奇通道交易指标，大道至简，能穿越牛熊
+def TAQ(HIGH,LOW,N):                              #唐安奇通道交易指标，大道至简，能穿越牛熊
     UP=HHV(HIGH,N);    DOWN=LLV(LOW,N);    MID=(UP+DOWN)/2
     return UP,MID,DOWN
   
