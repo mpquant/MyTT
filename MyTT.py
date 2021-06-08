@@ -139,5 +139,9 @@ def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):               #动向指标：结果和同�
     ADX = MA(ABS(MDI - PDI) / (PDI + MDI) * 100, M2)
     ADXR = (ADX + REF(ADX, M2)) / 2
     return PDI, MDI, ADX, ADXR  
+
+def TAQ(HIGH,LOW,N):                     #唐安奇通道交易指标，大道至简，能穿越牛熊
+    UP=HHV(HIGH,N);    DOWN=LLV(LOW,N);    MID=(UP+DOWN)/2
+    return UP,MID,DOWN
   
   #望大家能提交更多指标和函数  https://github.com/mpquant/MyTT
