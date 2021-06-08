@@ -237,6 +237,12 @@ def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):      #动向指标：结果和同花顺，�
     return PDI, MDI, ADX, ADXR    
 ```
 
+```python
+def TAQ(HIGH,LOW,N):                     #唐安奇通道交易指标，大道至简，穿越牛熊
+    UP=HHV(HIGH,N);    DOWN=LLV(LOW,N);    MID=(UP+DOWN)/2
+    return UP,MID,DOWN
+```
+
 ### 因为语法的问题 =: 是不能用了，python就是=号 ，条件与是& ，条件或是|
 ```python
 
