@@ -272,9 +272,9 @@ plt.plot(mid,label='mid');      plt.plot(lower,label='lower');
 ### 唐安奇交易通道指标计算和做图演示 (沪深300指数)
 
 ```python
-up,mid,down=TAQ(HIGH),LOW,20)                                    #获取唐安奇交易通道 数据
+up,mid,down=TAQ(HIGH,LOW,20)                                    #获取唐安奇交易通道数据，大道至简，能穿越牛熊
 plt.figure(figsize=(15,8))  
-plt.plot(CLOSE,label='沪深300指数')                               #画图显示     
+plt.plot(CLOSE,label='沪深300指数')                                  
 plt.plot(up,label='唐安奇-上轨');     plt.plot(mid,label='唐安奇-中轨');      plt.plot(down,label='唐安奇-下轨')
 ```
 <div  align="center"> <img src="/img/taq.jpg" width = "960" height = "400" alt="taq" /> </div>
