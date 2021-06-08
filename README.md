@@ -269,6 +269,16 @@ plt.plot(mid,label='mid');      plt.plot(lower,label='lower');
 <div  align="center"> <img src="/img/boll.png" width = "960" height = "400" alt="Boll线" /> </div>
 
 
+### 唐安奇交易通道指标计算和做图演示 (沪深300指数)
+
+```python
+up,mid,down=TAQ(HIGH),LOW,20)                                    #获取唐安奇交易通道 数据
+plt.figure(figsize=(15,8))  
+plt.plot(CLOSE,label='沪深300指数')                               #画图显示     
+plt.plot(up,label='唐安奇-上轨');     plt.plot(mid,label='唐安奇-中轨');      plt.plot(down,label='唐安奇-下轨')
+```
+<div  align="center"> <img src="/img/taq.jpg" width = "960" height = "400" alt="taq" /> </div>
+
 
 ### 需安装第三方库（无需ta-lib库，所有指标实现仅需要安装pandas既可）
 * pandas
