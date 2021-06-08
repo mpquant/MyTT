@@ -132,9 +132,16 @@ EXIST(CLOSE >OPEN, 5)                   #最近5天是否有一天收阳线
 ```
 
 * 上一次条件成立到当前的周期：BARSLAST
-
 ```python
 BARSLAST(CLOSE/REF(CLOSE)>=1.1)         #上一次涨停到今天的天数
+```
+
+* 返回序列的线性回归斜率：SLOPE
+* 取回线性回归后的预测值：FORCAST
+```python
+SLOPE(MA(CLOSE,10),5)                   #得到10日平均线最近5天的斜率
+
+FORCAST(CLOSE,20)                       #根据最近20日的走势预测明天的收盘价
 ```
 
 *  n天内最大值：HHV
@@ -147,15 +154,11 @@ HHV(MAX(OPEN, CLOSE), 20)               #最近20天K线实体的最高价
 ```python
 LLV(MIN(OPEN, CLOSE), 60)              #最近60天K线实体的最低价
 ```
-* 求和n日数据 SUM
 
-```python
-SUM(CLOSE, 10)                         #求和10天的收盘价
-```
 * 条件 IF
 
 ```python
-IF(OPEN > CLOSE, OPEN, CLOSE)        #如果 开盘>收盘  返回OPEN ，否则返回CLOSE
+IF(OPEN > CLOSE, OPEN, CLOSE)          #如果 开盘>收盘  返回OPEN ，否则返回CLOSE
 ```
 
 ### 具体指标的实现，全部基于MyTT库中的工具函数 （更多指标可以自行添加）
