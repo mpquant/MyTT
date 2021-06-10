@@ -284,7 +284,7 @@ def MTM(CLOSE,N=12,M=6):                #动量指标
     return MTM,MTMMA
 ```
 ```python
-def ROC(CLOSE,N=12,M=6): 
+def ROC(CLOSE,N=12,M=6):                #变动率指标
     ROC=100*(CLOSE-REF(CLOSE,N))/REF(CLOSE,N);    MAROC=MA(ROC,M)
     return ROC,MAROC
 ```    
