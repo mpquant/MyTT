@@ -143,5 +143,42 @@ def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):               #动向指标：结果和同�
 def TAQ(HIGH,LOW,N):                              #唐安奇通道交易指标，大道至简，能穿越牛熊
     UP=HHV(HIGH,N);    DOWN=LLV(LOW,N);    MID=(UP+DOWN)/2
     return UP,MID,DOWN
+
+def TRIX(CLOSE,M1=12, M2=20):                      #三重指数平滑平均线
+    TR = EMA(EMA(EMA(CLOSE, M1), M1), M1)
+    TRIX = (TR - REF(TR, 1)) / REF(TR, 1) * 100
+    TRMA = MA(TRIX, M2)
+    return TRIX, TRMA
+
+def VR(CLOSE,VOL,M1=26):                           #VR容量比率
+    LC = REF(CLOSE, 1)
+    return SUM(IF(CLOSE > LC, VOL, 0), M1) / SUM(IF(CLOSE <= LC, VOL, 0), M1) * 100
+
+def EMV(HIGH,LOW,VOL,N=14,M=9):                     #简易波动指标 
+    VOLUME=MA(VOL,N)/VOL;       MID=100*(HIGH+LOW-REF(HIGH+LOW,1))/(HIGH+LOW)
+    EMV=MA(MID*VOLUME*(HIGH-LOW)/MA(HIGH-LOW,N),N);    MAEMV=MA(EMV,M)
+    return EMV,MAEMV
+
+
+def DPO(CLOSE,M1=20, M2=10, M3=6):                  #区间震荡线
+    DPO = CLOSE - REF(MA(CLOSE, M1), M2);    MADPO = MA(DPO, M3)
+    return DPO, MADPO
+
+def BRAR(OPEN,CLOSE,HIGH,LOW,M1=26):                 #BRAR-ARBR 情绪指标  
+    AR = SUM(HIGH - OPEN, M1) / SUM(OPEN - LOW, M1) * 100
+    BR = SUM(MAX(0, HIGH - REF(CLOSE, 1)), M1) / SUM(MAX(0, REF(CLOSE, 1) - LOW), M1) * 100
+    return AR, BR
+
+def DMA(CLOSE,N1=10,N2=50,M=10):                     #平行线差指标  
+    DIF=MA(CLOSE,N1)-MA(CLOSE,N2);    DIFMA=MA(DIF,M)
+    return DIF,DIFMA
+
+def MTM(CLOSE,N=12,M=6):                             #动量指标
+    MTM=CLOSE-REF(CLOSE,N);         MTMMA=MA(MTM,M)
+    return MTM,MTMMA
+
+def ROC(CLOSE,N=12,M=6):                             #变动率指标
+    ROC=100*(CLOSE-REF(CLOSE,N))/REF(CLOSE,N);    MAROC=MA(ROC,M)
+    return ROC,MAROC  
   
   #望大家能提交更多指标和函数  https://github.com/mpquant/MyTT
