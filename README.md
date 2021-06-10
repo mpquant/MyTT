@@ -250,38 +250,40 @@ def TRIX(CLOSE,M1=12, M2=20):            #三重指数平滑平均线
     TRIX = (TR - REF(TR, 1)) / REF(TR, 1) * 100
     TRMA = MA(TRIX, M2)
     return TRIX, TRMA
-
+```
+```python
 def DPO(CLOSE,M1=20, M2=10, M3=6):       #区间震荡线
     DPO = CLOSE - REF(MA(CLOSE, M1), M2);    MADPO = MA(DPO, M3)
     return DPO, MADPO
-
+```
+```python
 def BRAR(OPEN,CLOSE,HIGH,LOW,M1=26):     #BRAR-ARBR 情绪指标  
     AR = SUM(HIGH - OPEN, M1) / SUM(OPEN - LOW, M1) * 100
     BR = SUM(MAX(0, HIGH - REF(CLOSE, 1)), M1) / SUM(MAX(0, REF(CLOSE, 1) - LOW), M1) * 100
     return AR, BR
-
+```
+```python
 def DMA(CLOSE,N1=10,N2=50,M=10):        #平行线差指标  
     DIF=MA(CLOSE,N1)-MA(CLOSE,N2);    DIFMA=MA(DIF,M)
     return DIF,DIFMA
 ```
-
 ```python
 def VR(CLOSE,VOL,M1=26):                 #VR容量比率
     LC = REF(CLOSE, 1)
     return SUM(IF(CLOSE > LC, VOL, 0), M1) / SUM(IF(CLOSE <= LC, VOL, 0), M1) * 100
-
+```
+```python
 def EMV(HIGH,LOW,VOL,N=14,M=9):          #简易波动指标 
     VOLUME=MA(VOL,N)/VOL;       MID=100*(HIGH+LOW-REF(HIGH+LOW,1))/(HIGH+LOW)
     EMV=MA(MID*VOLUME*(HIGH-LOW)/MA(HIGH-LOW,N),N);    MAEMV=MA(EMV,M)
     return EMV,MAEMV
 ```
-
-
 ```python
 def MTM(CLOSE,N=12,M=6):                #动量指标
     MTM=CLOSE-REF(CLOSE,N);         MTMMA=MA(MTM,M)
     return MTM,MTMMA
-
+```
+```python
 def ROC(CLOSE,N=12,M=6): 
     ROC=100*(CLOSE-REF(CLOSE,N))/REF(CLOSE,N);    MAROC=MA(ROC,M)
     return ROC,MAROC
