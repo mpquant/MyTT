@@ -340,6 +340,8 @@ plt.plot(up,label='唐安奇-上轨');     plt.plot(mid,label='唐安奇-中轨'
 
 * [ths_trade同花顺自动化交易股票下单接口API,量化框架](https://github.com/mpquant/ths_trade)
 
+* [Ashare最简股票行情数据接口API,A股行情完全开源免费](https://github.com/mpquant/Ashare)
+
 
 ### 巴特量化
 * 数字货币 股市量化工具 行情系统软件开发 通达信同花顺公式开发 python量化系统开发
