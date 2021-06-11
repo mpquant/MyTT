@@ -4,7 +4,7 @@
   
 import numpy as np; import pandas as pd
 
-
+#------------------ 0级：核心工具函数 --------------------------------------------      
 def RD(N,D=3):   return np.round(N,D)        #四舍五入取3位小数 
 def RET(S,N=1):  return np.array(S)[-N]      #返回序列倒数第N个值,默认返回最后一个
 def ABS(S):      return np.abs(S)            #返回N的绝对值
@@ -47,8 +47,13 @@ def AVEDEV(S,N):      #平均绝对偏差  (序列与其平均值的绝对差的
     avedev=pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean())    
     return avedev.values
 
-    #--------------------------------------------------------------------        
+def SLOPE(S,N,RS=False):               #返S序列N周期回线性回归斜率 (默认只返回斜率,不返回整个直线序列)
+    M=pd.Series(S[-N:]);   poly = np.polyfit(M.index, M.values,deg=1);    Y=np.polyval(poly, M.index); 
+    if RS: return Y[1]-Y[0],Y
+    return Y[1]-Y[0]
 
+  
+#------------------   1级：应用层函数(通过0级核心函数实现） ----------------------------------
 def COUNT(S_BOOL, N):                  # COUNT(CLOSE>O, N):  最近N天满足S_BOO的天数  True的天数
     return SUM(S_BOOL,N)    
 
@@ -68,11 +73,6 @@ def BARSLAST(S_BOOL):                  #上一次条件成立到当前的周期
     M=np.argwhere(S_BOOL);             # BARSLAST(CLOSE/REF(CLOSE)>=1.1) 上一次涨停到今天的天数
     return len(S_BOOL)-int(M[-1])-1  if M.size>0 else -1
 
-def SLOPE(S,N,RS=False):               #返S序列N周期回线性回归斜率 (默认只返回斜率,不返回整个直线序列)
-    M=pd.Series(S[-N:]);   poly = np.polyfit(M.index, M.values,deg=1);    Y=np.polyval(poly, M.index); 
-    if RS: return Y[1]-Y[0],Y
-    return Y[1]-Y[0]
-
 def FORCAST(S,N):                      #返S序列N周期回线性回归后的预测值
     K,Y=SLOPE(S,N,RS=True)
     return Y[-1]+K
@@ -82,7 +82,8 @@ def CROSS(S1,S2):                      #判断穿越 CROSS(MA(C,5),MA(C,10))
     return COUNT(CROSS_BOOL>0,2)==1    #上穿：昨天0 今天1   下穿：昨天1 今天0
 
 
-#-----------------------------------下面是具体指标-------------------------------------
+
+#------------------   2级：技术指标函数(全部通过0级，1级函数实现） ------------------------------
 def MACD(CLOSE,SHORT=12,LONG=26,M=9):            # EMA的关系，S取120日，和雪球小数点2位相同
     DIF = EMA(CLOSE,SHORT)-EMA(CLOSE,LONG);  
     DEA = EMA(DIF,M);      MACD=(DIF-DEA)*2
