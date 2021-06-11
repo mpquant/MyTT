@@ -40,8 +40,8 @@ df=get_price('btc.usdt',count=120,frequency='1d');     # ‘4h’是4小时
 ```python
 
 #-------有数据了，下面开始正题 -------------
-CLOSE=df.close.values;  OPEN=df.open.values
-HIGH=df.high.values;    LOW=df.low.values             #基础数据定义
+CLOSE=df.close.values;  OPEN=df.open.values           #基础数据定义，只要传入的是序列都可以   
+HIGH=df.high.values;    LOW=df.low.values             #也支持pd序列，列表,例如 CLOSE=df.close ,   CLOSE=list(df.close) 都是一样
 
 MA5=MA(CLOSE,5)                                       #获取5日均线序列
 MA10=MA(CLOSE,10)                                     #获取10日均线序列
