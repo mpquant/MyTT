@@ -2,7 +2,7 @@
 MyTT是您量化工具箱里的瑞士军刀，精炼而高效，它将通达信,同花顺,文华麦语言等指标公式indicators,最简移植到Python中,核心库单个文件，仅百行代码,实现和转换同花顺通达信所有常见指标MACD,RSI,BOLL,ATR,KDJ,CCI,PSY等,全部基于numpy和pandas的函数封装，简洁且高性能，能非常方便的应用在各自股票股市技术分析，股票自动程序化交易,数字货币BTC等量化等领域
 
 # 功能特点
-* 核心库轻量化： 项目库就一个文件MyTT.py,不用安装，不用设置，可自由裁剪，随用随走 ( from  MyTT import * 即可 )
+* 核心库轻量化： 项目库就一个文件MyTT.py,不用安装设置，可自由裁剪，随用随走 `from MyTT import *` 即可 
 
 * 代码人类化：)  没有什么炫耀的编程花样，初学者也能看懂，自己就能自行增加指标，马上就能用在项目中。
 
@@ -25,7 +25,7 @@ from  hb_hq_api import *         #数字货币行情库
 from  MyTT import *              #myTT麦语言工具函数指标库
 
 #获取btc.usdt交易对120日的数据
-df=get_price('btc.usdt',count=120,frequency='1d');     # ‘4h’是4小时
+df=get_price('btc.usdt',count=120,frequency='1d');     #'1d'是1天, '4h'是4小时
 
 #-----------df结果如下表(股市也基本一样)-------------------------------------------
 ```
@@ -58,16 +58,6 @@ print('最近5天收盘价全都大于10日线吗？',EVERY(CLOSE>MA10,5) )
 * n天前的数据：`REF`
 ```python
 REF(CLOSE, 1)              # 截止到昨天收盘价 序列
-```
-
-* 从序列中取倒数第N个数据(单个)：RET
-```python
-RET(CLOSE, 1)             # 最近一天的收盘价，单个数据
-```
-
-* 从序列中所有元素四舍五入：RD
-```python
-RD(CLOSE)                    # 默认返回3位小数
 ```
 
 * 移动平均线计算：MA
