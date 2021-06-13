@@ -1,6 +1,7 @@
 # MyTT 麦语言-通达信-同花顺指标实现    https://github.com/mpquant/MyTT
-# V2.1 2021-6-6 新增 BARSLAST函数
-# V2.2 2021-6-8 新增 SLOPE,FORCAST线性回归，和回归预测函数
+# V2.1 2021-6-6  新增 BARSLAST函数
+# V2.2 2021-6-8  新增 SLOPE,FORCAST线性回归，和回归预测函数
+# V2.3 2021-6-13 新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR等指标
   
 import numpy as np; import pandas as pd
 
@@ -26,28 +27,28 @@ def STD(S,N):           #求序列的N日标准差，返回序列
 def IF(S_BOOL,S_TRUE,S_FALSE):          #序列布尔判断 res=S_TRUE if S_BOOL==True  else  S_FALSE
     return np.where(S_BOOL, S_TRUE, S_FALSE)
 
-def SUM(S, N):                          #对序列求N天累计和，返回序列         
-    return pd.Series(S).rolling(N).sum().values
+def SUM(S, N):            #对序列求N天累计和，返回序列    N=0对序列所有依次求和         
+    return pd.Series(S).rolling(N).sum().values if N>0 else pd.Series(S).cumsum()  
 
-def HHV(S,N):                           # HHV(C, 5)  # 最近5天收盘最高价        
+def HHV(S,N):             # HHV(C, 5)  # 最近5天收盘最高价        
     return pd.Series(S).rolling(N).max().values
 
-def LLV(S,N):                           # LLV(C, 5)  # 最近5天收盘最低价     
+def LLV(S,N):             # LLV(C, 5)  # 最近5天收盘最低价     
     return pd.Series(S).rolling(N).min().values
 
-def EMA(S,N):         #指数移动平均,为了精度 S>4*N  EMA至少需要120周期       
+def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需要120周期       
     return pd.Series(S).ewm(span=N, adjust=False).mean().values    
 
-def SMA(S, N, M=1):   #中国式的SMA,至少需要120周期才精确         
+def SMA(S, N, M=1):       #中国式的SMA,至少需要120周期才精确         
     K = pd.Series(S).rolling(N).mean()    #先求出平均值 (下面如果有不用循环的办法，能提高性能，望告知)
     for i in range(N+1, len(S)):  K[i] = (M * S[i] + (N -M) * K[i-1]) / N  # 因为要取K[i-1]，所以 range(N+1, len(S))        
     return K
 
-def AVEDEV(S,N):      #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
+def AVEDEV(S,N):           #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     avedev=pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean())    
     return avedev.values
 
-def SLOPE(S,N,RS=False):               #返S序列N周期回线性回归斜率 (默认只返回斜率,不返回整个直线序列)
+def SLOPE(S,N,RS=False):    #返S序列N周期回线性回归斜率 (默认只返回斜率,不返回整个直线序列)
     M=pd.Series(S[-N:]);   poly = np.polyfit(M.index, M.values,deg=1);    Y=np.polyval(poly, M.index); 
     if RS: return Y[1]-Y[0],Y
     return Y[1]-Y[0]
@@ -141,7 +142,7 @@ def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):               #动向指标：结果和同�
     ADXR = (ADX + REF(ADX, M2)) / 2
     return PDI, MDI, ADX, ADXR  
 
-def TAQ(HIGH,LOW,N):                              #唐安奇通道交易指标，大道至简，能穿越牛熊
+def TAQ(HIGH,LOW,N):                               #唐安奇通道交易指标，大道至简，能穿越牛熊
     UP=HHV(HIGH,N);    DOWN=LLV(LOW,N);    MID=(UP+DOWN)/2
     return UP,MID,DOWN
 
@@ -151,7 +152,7 @@ def TRIX(CLOSE,M1=12, M2=20):                      #三重指数平滑平均线
     TRMA = MA(TRIX, M2)
     return TRIX, TRMA
 
-def VR(CLOSE,VOL,M1=26):                           #VR容量比率
+def VR(CLOSE,VOL,M1=26):                            #VR容量比率
     LC = REF(CLOSE, 1)
     return SUM(IF(CLOSE > LC, VOL, 0), M1) / SUM(IF(CLOSE <= LC, VOL, 0), M1) * 100
 
@@ -178,8 +179,24 @@ def MTM(CLOSE,N=12,M=6):                             #动量指标
     MTM=CLOSE-REF(CLOSE,N);         MTMMA=MA(MTM,M)
     return MTM,MTMMA
 
+def MASS(HIGH,LOW,N1=9,N2=25,M=6):                   # 梅斯线
+    MASS=SUM(MA(HIGH-LOW,N1)/MA(MA(HIGH-LOW,N1),N1),N2)
+    MA_MASS=MA(MASS,M)
+    return MASS,MA_MASS
+  
 def ROC(CLOSE,N=12,M=6):                             #变动率指标
     ROC=100*(CLOSE-REF(CLOSE,N))/REF(CLOSE,N);    MAROC=MA(ROC,M)
     return ROC,MAROC  
+
+def EXPMA(CLOSE,N1=12,N2=50):                        #EMA指数平均数指标
+    return EMA(CLOSE,N1),EMA(CLOSE,N2);
+
+def OBV(CLOSE,VOL):                                  #能量潮指标
+    return SUM(IF(CLOSE>REF(CLOSE,1),VOL,IF(CLOSE<REF(CLOSE,1),-VOL,0)),0)/10000
+          
+
   
   #望大家能提交更多指标和函数  https://github.com/mpquant/MyTT
+
+  
+  
