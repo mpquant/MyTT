@@ -229,71 +229,80 @@ def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):      #动向指标：结果和同花顺，�
 ```
 
 ```python
-def TAQ(HIGH,LOW,N):                     #唐安奇通道交易指标，大道至简，能穿越牛熊
+def TAQ(HIGH,LOW,N):                         #唐安奇通道交易指标，大道至简，能穿越牛熊
     UP=HHV(HIGH,N);    DOWN=LLV(LOW,N);    MID=(UP+DOWN)/2
     return UP,MID,DOWN
 ```
 
 ```python
-def TRIX(CLOSE,M1=12, M2=20):            #三重指数平滑平均线
+def TRIX(CLOSE,M1=12, M2=20):                #三重指数平滑平均线
     TR = EMA(EMA(EMA(CLOSE, M1), M1), M1)
     TRIX = (TR - REF(TR, 1)) / REF(TR, 1) * 100
     TRMA = MA(TRIX, M2)
     return TRIX, TRMA
 ```
 ```python
-def DPO(CLOSE,M1=20, M2=10, M3=6):       #区间震荡线
+def DPO(CLOSE,M1=20, M2=10, M3=6):           #区间震荡线
     DPO = CLOSE - REF(MA(CLOSE, M1), M2);    MADPO = MA(DPO, M3)
     return DPO, MADPO
 ```
 ```python
-def BRAR(OPEN,CLOSE,HIGH,LOW,M1=26):     #BRAR-ARBR 情绪指标  
+def BRAR(OPEN,CLOSE,HIGH,LOW,M1=26):         #BRAR-ARBR 情绪指标  
     AR = SUM(HIGH - OPEN, M1) / SUM(OPEN - LOW, M1) * 100
     BR = SUM(MAX(0, HIGH - REF(CLOSE, 1)), M1) / SUM(MAX(0, REF(CLOSE, 1) - LOW), M1) * 100
     return AR, BR
 ```
 ```python
-def DMA(CLOSE,N1=10,N2=50,M=10):        #平行线差指标  
+def DMA(CLOSE,N1=10,N2=50,M=10):             #平行线差指标  
     DIF=MA(CLOSE,N1)-MA(CLOSE,N2);    DIFMA=MA(DIF,M)
     return DIF,DIFMA
 ```
 ```python
-def VR(CLOSE,VOL,M1=26):                 #VR容量比率
+def VR(CLOSE,VOL,M1=26):                    #VR容量比率
     LC = REF(CLOSE, 1)
     return SUM(IF(CLOSE > LC, VOL, 0), M1) / SUM(IF(CLOSE <= LC, VOL, 0), M1) * 100
 ```
 ```python
-def EMV(HIGH,LOW,VOL,N=14,M=9):          #简易波动指标 
+def EMV(HIGH,LOW,VOL,N=14,M=9):              #简易波动指标 
     VOLUME=MA(VOL,N)/VOL;       MID=100*(HIGH+LOW-REF(HIGH+LOW,1))/(HIGH+LOW)
     EMV=MA(MID*VOLUME*(HIGH-LOW)/MA(HIGH-LOW,N),N);    MAEMV=MA(EMV,M)
     return EMV,MAEMV
 ```
 ```python
-def MTM(CLOSE,N=12,M=6):                #动量指标
+def MTM(CLOSE,N=12,M=6):                    #动量指标
     MTM=CLOSE-REF(CLOSE,N);         MTMMA=MA(MTM,M)
     return MTM,MTMMA
 ```
 ```python
-def ROC(CLOSE,N=12,M=6):                #变动率指标
+def ROC(CLOSE,N=12,M=6):                     #变动率指标
     ROC=100*(CLOSE-REF(CLOSE,N))/REF(CLOSE,N);    MAROC=MA(ROC,M)
     return ROC,MAROC
 ```
 ```python
-def EXPMA(CLOSE,N1=12,N2=50):          #EMA指数平均数指标
+def EXPMA(CLOSE,N1=12,N2=50):                #EMA指数平均数指标
     return EMA(CLOSE,N1),EMA(CLOSE,N2);
 ``` 
 ```python
-def OBV(CLOSE,VOL):                    #能量潮指标
+def OBV(CLOSE,VOL):                          #能量潮指标
     return SUM(IF(CLOSE>REF(CLOSE,1),VOL,IF(CLOSE<REF(CLOSE,1),-VOL,0)),0)/10000
 ``` 
 
 ```python
-def MASS(HIGH,LOW,N1=9,N2=25,M=6):     #梅斯线
+def MASS(HIGH,LOW,N1=9,N2=25,M=6):           #梅斯线
     MASS=SUM(MA(HIGH-LOW,N1)/MA(MA(HIGH-LOW,N1),N1),N2)
     MA_MASS=MA(MASS,M)
     return MASS,MA_MASS
 ``` 
+```python
+def ASI(OPEN,CLOSE,HIGH,LOW,M1=26,M2=10):   #振动升降指标
+    LC=REF(CLOSE,1);  AA=ABS(HIGH-LC);  BB=ABS(LOW-LC);
+    CC=ABS(HIGH-REF(LOW,1));   DD=ABS(LC-REF(OPEN,1));
+    R=IF( (AA>BB) & (AA>CC),AA+BB/2+DD/4,IF( (BB>CC) & (BB>AA),BB+AA/2+DD/4,CC+DD/4));
+    X=(CLOSE-LC+(CLOSE-OPEN)/2+LC-REF(OPEN,1));
+    SI=16*X/R*MAX(AA,BB);    ASI=SUM(SI,M1);    ASIT=MA(ASI,M2);
+    return ASI,ASIT            
 
+``` 
 
 ### 因为语法的问题 =: 是不能用了，python就是=号 ，条件与是& ，条件或是|
 ```python
