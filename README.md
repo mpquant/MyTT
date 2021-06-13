@@ -277,7 +277,23 @@ def MTM(CLOSE,N=12,M=6):                #动量指标
 def ROC(CLOSE,N=12,M=6):                #变动率指标
     ROC=100*(CLOSE-REF(CLOSE,N))/REF(CLOSE,N);    MAROC=MA(ROC,M)
     return ROC,MAROC
-```    
+```
+```python
+def EXPMA(CLOSE,N1=12,N2=50):          #EMA指数平均数指标
+    return EMA(CLOSE,N1),EMA(CLOSE,N2);
+``` 
+```python
+def OBV(CLOSE,VOL):                    #能量潮指标
+    return SUM(IF(CLOSE>REF(CLOSE,1),VOL,IF(CLOSE<REF(CLOSE,1),-VOL,0)),0)/10000
+``` 
+
+```python
+def MASS(HIGH,LOW,N1=9,N2=25,M=6):     #梅斯线
+    MASS=SUM(MA(HIGH-LOW,N1)/MA(MA(HIGH-LOW,N1),N1),N2)
+    MA_MASS=MA(MASS,M)
+    return MASS,MA_MASS
+``` 
+
 
 ### 因为语法的问题 =: 是不能用了，python就是=号 ，条件与是& ，条件或是|
 ```python
