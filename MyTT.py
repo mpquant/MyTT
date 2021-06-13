@@ -1,7 +1,7 @@
 # MyTT 麦语言-通达信-同花顺指标实现    https://github.com/mpquant/MyTT
 # V2.1 2021-6-6  新增 BARSLAST函数
 # V2.2 2021-6-8  新增 SLOPE,FORCAST线性回归，和回归预测函数
-# V2.3 2021-6-13 新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR等指标
+# V2.3 2021-6-13 新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
   
 import numpy as np; import pandas as pd
 
@@ -193,7 +193,14 @@ def EXPMA(CLOSE,N1=12,N2=50):                        #EMA指数平均数指标
 
 def OBV(CLOSE,VOL):                                  #能量潮指标
     return SUM(IF(CLOSE>REF(CLOSE,1),VOL,IF(CLOSE<REF(CLOSE,1),-VOL,0)),0)/10000
-          
+
+def ASI(OPEN,CLOSE,HIGH,LOW,M1=26,M2=10):            #振动升降指标
+    LC=REF(CLOSE,1);      AA=ABS(HIGH-LC);     BB=ABS(LOW-LC);
+    CC=ABS(HIGH-REF(LOW,1));   DD=ABS(LC-REF(OPEN,1));
+    R=IF( (AA>BB) & (AA>CC),AA+BB/2+DD/4,IF( (BB>CC) & (BB>AA),BB+AA/2+DD/4,CC+DD/4));
+    X=(CLOSE-LC+(CLOSE-OPEN)/2+LC-REF(OPEN,1));
+    SI=16*X/R*MAX(AA,BB);   ASI=SUM(SI,M1);   ASIT=MA(ASI,M2);
+    return ASI,ASIT   
 
   
   #望大家能提交更多指标和函数  https://github.com/mpquant/MyTT
