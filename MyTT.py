@@ -142,10 +142,16 @@ def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):               #动向指标：结果和同�
     ADXR = (ADX + REF(ADX, M2)) / 2
     return PDI, MDI, ADX, ADXR  
 
-def TAQ(HIGH,LOW,N):                               #唐安奇通道交易指标，大道至简，能穿越牛熊
+def TAQ(HIGH,LOW,N):                               #唐安奇通道(海龟)交易指标，大道至简，能穿越牛熊
     UP=HHV(HIGH,N);    DOWN=LLV(LOW,N);    MID=(UP+DOWN)/2
     return UP,MID,DOWN
 
+def KTN(CLOSE,HIGH,LOW,N=20,M=10):                 #肯特纳交易通道, N选20日，ATR选10日
+    MID=EMA((HIGH+LOW+CLOSE)/3,N)
+    ATRN=ATR(CLOSE,HIGH,LOW,M)
+    UPPER=MID+2*ATRN;   LOWER=MID-2*ATRN
+    return UPPER,MID,LOWER       
+  
 def TRIX(CLOSE,M1=12, M2=20):                      #三重指数平滑平均线
     TR = EMA(EMA(EMA(CLOSE, M1), M1), M1)
     TRIX = (TR - REF(TR, 1)) / REF(TR, 1) * 100
