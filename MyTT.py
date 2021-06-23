@@ -13,7 +13,7 @@ def MAX(S1,S2):  return np.maximum(S1,S2)    #序列max
 def MIN(S1,S2):  return np.minimum(S1,S2)    #序列min
          
 def MA(S,N):           #求序列的N日平均值，返回序列                    
-    return pd.Series(S).rolling(N).mean().values     # pd.rolling_mean(S,N)  (PYTHON2)
+    return pd.Series(S).rolling(N).mean().values     # pd.rolling_mean(S,N)  (Python2)
 
 def REF(S, N=1):       #对序列整体下移动N,返回序列(shift后会产生NAN)    
     return pd.Series(S).shift(N).values  
@@ -28,13 +28,13 @@ def IF(S_BOOL,S_TRUE,S_FALSE):          #序列布尔判断 res=S_TRUE if S_BOOL
     return np.where(S_BOOL, S_TRUE, S_FALSE)
 
 def SUM(S, N):            #对序列求N天累计和，返回序列    N=0对序列所有依次求和         
-    return pd.Series(S).rolling(N).sum().values if N>0 else pd.Series(S).cumsum()  
+    return pd.Series(S).rolling(N).sum().values if N>0 else pd.Series(S).cumsum()    #pd.rolling_sum(S,N)  (Python2)
 
 def HHV(S,N):             # HHV(C, 5)  # 最近5天收盘最高价        
-    return pd.Series(S).rolling(N).max().values      # pd.rolling_max(S,N)  (PYTHON2)
+    return pd.Series(S).rolling(N).max().values      # pd.rolling_max(S,N)  (Python2)
 
 def LLV(S,N):             # LLV(C, 5)  # 最近5天收盘最低价     
-    return pd.Series(S).rolling(N).min().values      # pd.rolling_min(S,N)  (PYTHON2)
+    return pd.Series(S).rolling(N).min().values      # pd.rolling_min(S,N)  (Python2)
 
 def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需要120周期       
     return pd.Series(S).ewm(span=N, adjust=False).mean().values    
