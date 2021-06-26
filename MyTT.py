@@ -2,6 +2,7 @@
 # V2.1 2021-6-6  新增 BARSLAST函数
 # V2.2 2021-6-8  新增 SLOPE,FORCAST线性回归，和回归预测函数
 # V2.3 2021-6-13 新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
+# V2.4 2021-6-26 新增 EXPMA,OBV,MFI指标
   
 import numpy as np; import pandas as pd
 
@@ -200,6 +201,11 @@ def EXPMA(CLOSE,N1=12,N2=50):                        #EMA指数平均数指标
 def OBV(CLOSE,VOL):                                  #能量潮指标
     return SUM(IF(CLOSE>REF(CLOSE,1),VOL,IF(CLOSE<REF(CLOSE,1),-VOL,0)),0)/10000
 
+def MFI(CLOSE,HIGH,LOW,VOL,N=14):                    #MFI指标是成交量的RSI指标
+    TYP = (HIGH + LOW + CLOSE)/3
+    V1=SUM(IF(TYP>REF(TYP,1),TYP*VOL,0),N)/SUM(IF(TYP<REF(TYP,1),TYP*VOL,0),N)  
+    return 100-(100/(1+V1))     
+  
 def ASI(OPEN,CLOSE,HIGH,LOW,M1=26,M2=10):            #振动升降指标
     LC=REF(CLOSE,1);      AA=ABS(HIGH-LC);     BB=ABS(LOW-LC);
     CC=ABS(HIGH-REF(LOW,1));   DD=ABS(LC-REF(OPEN,1));
