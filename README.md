@@ -1,5 +1,5 @@
 # MyTT (My麦语言 T通达信 T同花顺)
-MyTT是您量化工具箱里的瑞士军刀，精炼而高效，它将通达信,同花顺,文华麦语言等指标公式indicators,最简移植到Python中,核心库单个文件，仅百行代码,实现和转换同花顺通达信所有常见指标MACD,RSI,BOLL,ATR,KDJ,CCI,PSY等,全部基于numpy和pandas的函数封装，简洁且高性能，能非常方便的应用在各自股票股市技术分析，股票自动程序化交易,数字货币BTC等量化等领域
+MyTT是您量化工具箱里的瑞士军刀，精炼而高效，它将通达信,同花顺,文华麦语言等指标公式indicators,最简移植到Python中,核心库单个文件，仅百行代码,实现和转换同花顺通达信所有常见指标MACD,RSI,BOLL,ATR,KDJ,CCI,PSY等,全部基于numpy和pandas的函数封装，简洁且高性能，能非常方便的应用在各自股票股市技术分析，股票自动程序化交易,数字货币BTC等量化等领域.Mini Python library with most stock market indicators.
 
 # 功能特点
 * 核心库轻量化： 项目库就一个文件MyTT.py,不用安装设置，可自由裁剪，随用随走 `from MyTT import *` 即可 
@@ -295,6 +295,12 @@ def OBV(CLOSE,VOL):                          #能量潮指标
     return SUM(IF(CLOSE>REF(CLOSE,1),VOL,IF(CLOSE<REF(CLOSE,1),-VOL,0)),0)/10000
 ``` 
 
+```python
+def MFI(CLOSE,HIGH,LOW,VOL,N=14):            #MFI指标是成交量的RSI指标
+    TYP = (HIGH + LOW + CLOSE)/3
+    V1=SUM(IF(TYP>REF(TYP,1),TYP*VOL,0),N)/SUM(IF(TYP<REF(TYP,1),TYP*VOL,0),N)  
+    return 100-(100/(1+V1))    
+``` 
 ```python
 def MASS(HIGH,LOW,N1=9,N2=25,M=6):           #梅斯线
     MASS=SUM(MA(HIGH-LOW,N1)/MA(MA(HIGH-LOW,N1),N1),N2)
