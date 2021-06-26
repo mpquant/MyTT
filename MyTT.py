@@ -38,7 +38,7 @@ def LLV(S,N):             # LLV(C, 5)  # 最近5天收盘最低价
     return pd.Series(S).rolling(N).min().values      # pd.rolling_min(S,N)  (Python2)
 
 def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需要120周期       
-    return pd.Series(S).ewm(span=N, adjust=False).mean().values    
+    return pd.Series(S).ewm(span=N, adjust=False).mean().values    # pd.ewma(S,span=N,adjust=False)  (Python2)
 
 def SMA(S, N, M=1):       #中国式的SMA,至少需要120周期才精确         
     K = pd.Series(S).rolling(N).mean()    #先求出平均值 (下面如果有不用循环的办法，能提高性能，望告知)
