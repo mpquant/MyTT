@@ -2,7 +2,8 @@
 # V2.1 2021-6-6  新增 BARSLAST函数
 # V2.2 2021-6-8  新增 SLOPE,FORCAST线性回归，和回归预测函数
 # V2.3 2021-6-13 新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
-# V2.4 2021-6-26 新增 EXPMA,OBV,MFI指标
+# V2.4 2021-6-27 新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
+
   
 import numpy as np; import pandas as pd
 
@@ -38,12 +39,10 @@ def LLV(S,N):             # LLV(C, 5)  # 最近5天收盘最低价
     return pd.Series(S).rolling(N).min().values      # pd.rolling_min(S,N)  (Python2)
 
 def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需要120周期       
-    return pd.Series(S).ewm(span=N, adjust=False).mean().values    # pd.ewma(S,span=N,adjust=False)  (Python2)
+    return pd.Series(S).ewm(span=N, adjust=False).mean().values      #pd.ewma(S,span=N,adjust=False)  (Python2)
 
-def SMA(S, N, M=1):       #中国式的SMA,至少需要120周期才精确         
-    K = pd.Series(S).rolling(N).mean()    #先求出平均值 (下面如果有不用循环的办法，能提高性能，望告知)
-    for i in range(N+1, len(S)):  K[i] = (M * S[i] + (N -M) * K[i-1]) / N  # 因为要取K[i-1]，所以 range(N+1, len(S))        
-    return K
+def SMA(S, N, M=1):        #中国式的SMA,至少需要120周期才精确 (雪球180周期)
+    return pd.Series(S).ewm(com=N-M, adjust=True).mean().values      #pd.ewma(S,com=N-M,adjust=True)   (Python2)
 
 def AVEDEV(S,N):           #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     avedev=pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean())    
