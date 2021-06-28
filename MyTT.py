@@ -1,9 +1,9 @@
-# MyTT 麦语言-通达信-同花顺指标实现    https://github.com/mpquant/MyTT
+# MyTT 麦语言-通达信-同花顺指标实现     https://github.com/mpquant/MyTT
+# Python2老版本pandas特别的MyTT：      https://github.com/mpquant/MyTT/blob/main/MyTT_python2.py 
 # V2.1 2021-6-6  新增 BARSLAST函数
 # V2.2 2021-6-8  新增 SLOPE,FORCAST线性回归，和回归预测函数
 # V2.3 2021-6-13 新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
 # V2.4 2021-6-27 新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
-
   
 import numpy as np; import pandas as pd
 
@@ -14,35 +14,35 @@ def ABS(S):      return np.abs(S)            #返回N的绝对值
 def MAX(S1,S2):  return np.maximum(S1,S2)    #序列max
 def MIN(S1,S2):  return np.minimum(S1,S2)    #序列min
          
-def MA(S,N):           #求序列的N日平均值，返回序列                    
-    return pd.Series(S).rolling(N).mean().values     # pd.rolling_mean(S,N)  (Python2)
+def MA(S,N):              #求序列的N日平均值，返回序列                    
+    return pd.Series(S).rolling(N).mean().values    
 
-def REF(S, N=1):       #对序列整体下移动N,返回序列(shift后会产生NAN)    
+def REF(S, N=1):          #对序列整体下移动N,返回序列(shift后会产生NAN)    
     return pd.Series(S).shift(N).values  
 
-def DIFF(S, N=1):      #前一个值减后一个值,前面会产生nan 
+def DIFF(S, N=1):         #前一个值减后一个值,前面会产生nan 
     return pd.Series(S).diff(N)  #np.diff(S)直接删除nan，会少一行
 
-def STD(S,N):           #求序列的N日标准差，返回序列    
+def STD(S,N):             #求序列的N日标准差，返回序列    
     return  pd.Series(S).rolling(N).std(ddof=0).values     
 
-def IF(S_BOOL,S_TRUE,S_FALSE):          #序列布尔判断 res=S_TRUE if S_BOOL==True  else  S_FALSE
+def IF(S_BOOL,S_TRUE,S_FALSE):   #序列布尔判断 return=S_TRUE if S_BOOL==True  else  S_FALSE
     return np.where(S_BOOL, S_TRUE, S_FALSE)
 
 def SUM(S, N):            #对序列求N天累计和，返回序列    N=0对序列所有依次求和         
-    return pd.Series(S).rolling(N).sum().values if N>0 else pd.Series(S).cumsum()    #pd.rolling_sum(S,N)  (Python2)
+    return pd.Series(S).rolling(N).sum().values if N>0 else pd.Series(S).cumsum()  
 
 def HHV(S,N):             # HHV(C, 5)  # 最近5天收盘最高价        
-    return pd.Series(S).rolling(N).max().values      # pd.rolling_max(S,N)  (Python2)
+    return pd.Series(S).rolling(N).max().values     
 
 def LLV(S,N):             # LLV(C, 5)  # 最近5天收盘最低价     
-    return pd.Series(S).rolling(N).min().values      # pd.rolling_min(S,N)  (Python2)
+    return pd.Series(S).rolling(N).min().values    
 
 def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需要120周期     alpha=2/(span+1)    
-    return pd.Series(S).ewm(span=N, adjust=False).mean().values      #pd.ewma(S,span=N,adjust=False)  (Python2)
+    return pd.Series(S).ewm(span=N, adjust=False).mean().values     
 
 def SMA(S, N, M=1):        #中国式的SMA,至少需要120周期才精确 (雪球180周期)    alpha=1/(1+com)
-    return pd.Series(S).ewm(com=N-M, adjust=True).mean().values      #pd.ewma(S,com=N-M,adjust=True)   (Python2)
+    return pd.Series(S).ewm(com=N-M, adjust=True).mean().values     
 
 def AVEDEV(S,N):           #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     avedev=pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean())    
