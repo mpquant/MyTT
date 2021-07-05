@@ -95,7 +95,7 @@ def KDJ(CLOSE,HIGH,LOW, N=9,M1=3,M2=3):         # KDJ指标
     K = EMA(RSV, (M1*2-1));    D = EMA(K,(M2*2-1));        J=K*3-D*2
     return K, D, J
 
-def RSI(CLOSE, N=24):      
+def RSI(CLOSE, N=24):                           # RSI指标,和通达信小数点2位相同
     DIF = CLOSE-REF(CLOSE,1) 
     return RD(SMA(MAX(DIF,0), N) / SMA(ABS(DIF), N) * 100)  
 
