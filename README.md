@@ -323,11 +323,14 @@ def ASI(OPEN,CLOSE,HIGH,LOW,M1=26,M2=10):   #振动升降指标
 ### 因为语法的问题 =: 是不能用了，python就是=号 ，条件与是& ，条件或是|
 ```python
 
+#通达信函数 VAR1:=(C>REF(C,1) AND C>REF(C,2));
+ python写法： VAR1=( (CLOSE>REF(CLOSE,1)) & (CLOSE>REF(CLOSE,2)) );
+
 # 收盘价在10日均线上 且10日均线在20日均线上
-(C > MA(C, 10)) & (MA(C, 10) > MA(C, 20))
+python写法： (C > MA(C, 10)) & (MA(C, 10) > MA(C, 20))
 
 # 收阳线 或 收盘价大于昨收
-(C > O) | (C > REF(C, 1))
+python写法： (CLOSE > O) | (CLOSE > REF(CLOSE, 1))
 
 ```
 
