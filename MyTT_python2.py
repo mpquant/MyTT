@@ -71,9 +71,9 @@ def FORCAST(S,N):                      #返S序列N周期回线性回归后的�
     K,Y=SLOPE(S,N,RS=True)
     return Y[-1]+K
   
-def CROSS(S1,S2):                      #判断穿越 CROSS(MA(C,5),MA(C,10))               
-    CROSS_BOOL=IF(S1>S2, True ,False)   
-    return COUNT(CROSS_BOOL>0,2)==1    #上穿：昨天0 今天1   下穿：昨天1 今天0
+def CROSS(S1,S2):                      #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))     判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))
+    CROSS_BOOL=IF(S1>S2, True ,False) 
+    return (COUNT(CROSS_BOOL>0,2)==1)*CROSS_BOOL #上穿：昨天0 今天1   下穿：昨天1 今天0
 
 
 
