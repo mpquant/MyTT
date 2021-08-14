@@ -4,6 +4,7 @@
 # V2.2 2021-6-8  新增 SLOPE,FORCAST线性回归，和回归预测函数
 # V2.3 2021-6-13 新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
 # V2.4 2021-6-27 新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
+# V2.5 2021-8-14 修正 CROSS穿越函数逻辑和通达信一致
   
 import numpy as np; import pandas as pd
 
@@ -77,19 +78,18 @@ def FORCAST(S,N):                      #返S序列N周期回线性回归后的�
     K,Y=SLOPE(S,N,RS=True)
     return Y[-1]+K
   
-def CROSS(S1,S2):                      #判断穿越 CROSS(MA(C,5),MA(C,10))               
-    CROSS_BOOL=IF(S1>S2, True ,False)   
-    return COUNT(CROSS_BOOL>0,2)==1    #上穿：昨天0 今天1   下穿：昨天1 今天0
+def CROSS(S1,S2):                      #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))     判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))
+    CROSS_BOOL=IF(S1>S2, True ,False) 
+    return (COUNT(CROSS_BOOL>0,2)==1)*CROSS_BOOL #上穿：昨天0 今天1   下穿：昨天1 今天0
 
-
-
+  
 #------------------   2级：技术指标函数(全部通过0级，1级函数实现） ------------------------------
-def MACD(CLOSE,SHORT=12,LONG=26,M=9):            # EMA的关系，S取120日，和雪球小数点2位相同
+def MACD(CLOSE,SHORT=12,LONG=26,M=9):             # EMA的关系，S取120日，和雪球小数点2位相同
     DIF = EMA(CLOSE,SHORT)-EMA(CLOSE,LONG);  
     DEA = EMA(DIF,M);      MACD=(DIF-DEA)*2
     return RD(DIF),RD(DEA),RD(MACD)
 
-def KDJ(CLOSE,HIGH,LOW, N=9,M1=3,M2=3):         # KDJ指标
+def KDJ(CLOSE,HIGH,LOW, N=9,M1=3,M2=3):           # KDJ指标
     RSV = (CLOSE - LLV(LOW, N)) / (HHV(HIGH, N) - LLV(LOW, N)) * 100
     K = EMA(RSV, (M1*2-1));    D = EMA(K,(M2*2-1));        J=K*3-D*2
     return K, D, J
