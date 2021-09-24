@@ -366,17 +366,9 @@ plt.plot(up,label='唐安奇-上轨');     plt.plot(mid,label='唐安奇-中轨'
 ### 团队其他开源项目 - 如果本项目能帮助到您，请右上角帮我们点亮 ★star 以示鼓励！
 * [MyTT 通达信,同花顺公式指标，文华麦语言的python实现](https://github.com/mpquant/MyTT)
 
-* [Hb_Spark数字货币高速免费实时行情服务器,量化必备](https://github.com/mpquant/huobi_intf)
-
-* [hb_trade火币网交易接口API最简封装,提供现货期货合约](https://github.com/mpquant/huobi_trade)
-
 * [Ashare最简股票行情数据接口API,A股行情完全开源免费](https://github.com/mpquant/Ashare)
 
 
-### 巴特量化
-* 数字货币 股市量化工具 行情系统软件开发 通达信同花顺公式开发 python量化系统开发
-
-* BTC虚拟货币量化交易策略开发 自动化交易策略运行
 
 ----------------------------------------------------
 
