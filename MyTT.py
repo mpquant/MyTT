@@ -5,6 +5,7 @@
 # V2.3 2021-6-13 新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
 # V2.4 2021-6-27 新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
 # V2.5 2021-8-14 修正 CROSS穿越函数逻辑和通达信一致
+# V2.6 2021-10-20 修正 SMA函数
   
 import numpy as np; import pandas as pd
 
@@ -42,8 +43,8 @@ def LLV(S,N):             # LLV(C, 5)  # 最近5天收盘最低价
 def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需要120周期     alpha=2/(span+1)    
     return pd.Series(S).ewm(span=N, adjust=False).mean().values     
 
-def SMA(S, N, M=1):        #中国式的SMA,至少需要120周期才精确 (雪球180周期)    alpha=1/(1+com)
-    return pd.Series(S).ewm(com=N-M, adjust=True).mean().values     
+def SMA(S, N, M=1):        #中国式的SMA,至少需要120周期才精确 (雪球180周期)    alpha=1/(1+com)    
+    return pd.Series(S).ewm(alpha=M/N,adjust=True).mean().values           #com=N-M/M
 
 def AVEDEV(S,N):           #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     return pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean()).values 
