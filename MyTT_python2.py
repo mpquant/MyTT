@@ -1,5 +1,6 @@
 # MyTT 麦语言-通达信-同花顺指标实现(python2版本）    https://github.com/mpquant/MyTT
-# 此版本针对python2的老版本pandas使用
+# 此版本针对python2的老版本pandas使用   2021-10-20日更新
+
 
   
 import numpy as np; import pandas as pd
@@ -38,8 +39,8 @@ def LLV(S,N):             # LLV(C, 5)  # 最近5天收盘最低价
 def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需要120周期     alpha=2/(span+1)    
     return pd.ewma(S,span=N,adjust=False) 
 
-def SMA(S, N, M=1):        #中国式的SMA,至少需要120周期才精确 (雪球180周期)    alpha=1/(1+com)
-    return pd.ewma(S,com=N-M,adjust=True)   
+def SMA(S, N, M=1):        #中国式的SMA,至少需要120周期才精确 (雪球180周期)    alpha=1/(1+com)    
+    return pd.ewma(S,com=((N-M)*1.0)/M,adjust=True)
 
 def AVEDEV(S,N):           #平均绝对偏差  (序列与其平均值的绝对差的平均值)       
     return pd.rolling_apply(S,N,lambda x: (np.abs(x - x.mean())).mean())
