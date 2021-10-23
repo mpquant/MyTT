@@ -1,5 +1,5 @@
 # MyTT 麦语言-通达信-同花顺指标实现(python2版本）    https://github.com/mpquant/MyTT
-# 此版本针对python2的老版本pandas使用   2021-10-20日更新
+# 此版本针对python2的老版本pandas使用   2021-10-22日更新
 
 
   
@@ -36,12 +36,15 @@ def HHV(S,N):                          # HHV(C, 5)  # 最近5天收盘最高价
 def LLV(S,N):             # LLV(C, 5)  # 最近5天收盘最低价     
      return pd.rolling_min(S,N)
 
-def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需要120周期     alpha=2/(span+1)    
+def EMA(S,N):              #指数移动平均,为了精度 S>4*N  EMA至少需要120周期     alpha=2/(span+1)    
     return pd.ewma(S,span=N,adjust=False) 
 
 def SMA(S, N, M=1):        #中国式的SMA,至少需要120周期才精确 (雪球180周期)    alpha=1/(1+com)    
     return pd.ewma(S,com=((N-M)*1.0)/M,adjust=True)
 
+def DMA(S, A):             #求X的动态移动平均，A作平滑因子   (此为核心函数，非指标） 
+    return pd.ewma(S,com=1.0/A-1,adjust=False)
+  
 def AVEDEV(S,N):           #平均绝对偏差  (序列与其平均值的绝对差的平均值)       
     return pd.rolling_apply(S,N,lambda x: (np.abs(x - x.mean())).mean())
 
@@ -171,8 +174,8 @@ def BRAR(OPEN,CLOSE,HIGH,LOW,M1=26):                 #BRAR-ARBR 情绪指标
     BR = SUM(MAX(0, HIGH - REF(CLOSE, 1)), M1) / SUM(MAX(0, REF(CLOSE, 1) - LOW), M1) * 100
     return AR, BR
 
-def DMA(CLOSE,N1=10,N2=50,M=10):                     #平行线差指标  
-    DIF=MA(CLOSE,N1)-MA(CLOSE,N2);    DIFMA=MA(DIF,M)
+def DFMA(CLOSE,N1=10,N2=50,M=10):                    #平行线差指标 
+    DIF=MA(CLOSE,N1)-MA(CLOSE,N2); DIFMA=MA(DIF,M)   #通达信指标叫DMA 同花顺叫新DMA
     return DIF,DIFMA
 
 def MTM(CLOSE,N=12,M=6):                             #动量指标
