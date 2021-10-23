@@ -1,11 +1,11 @@
 # MyTT 麦语言-通达信-同花顺指标实现     https://github.com/mpquant/MyTT
 # Python2老版本pandas特别的MyTT：      https://github.com/mpquant/MyTT/blob/main/MyTT_python2.py 
-# V2.1 2021-6-6  新增 BARSLAST函数
-# V2.2 2021-6-8  新增 SLOPE,FORCAST线性回归，和回归预测函数
-# V2.3 2021-6-13 新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
-# V2.4 2021-6-27 新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
-# V2.5 2021-8-14 修正 CROSS穿越函数逻辑和通达信一致
-# V2.6 2021-10-20 修正 SMA函数
+# V2.1 2021-6-6   新增 BARSLAST函数
+# V2.2 2021-6-8   新增 SLOPE,FORCAST线性回归，和回归预测函数
+# V2.3 2021-6-13  新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
+# V2.4 2021-6-27  新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
+# V2.5 2021-8-14  修正 CROSS穿越函数逻辑和通达信一致
+# V2.6 2021-10-23 修正 SMA函数 DMA函数
   
 import numpy as np; import pandas as pd
 
@@ -46,6 +46,9 @@ def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需�
 def SMA(S, N, M=1):        #中国式的SMA,至少需要120周期才精确 (雪球180周期)    alpha=1/(1+com)    
     return pd.Series(S).ewm(alpha=M/N,adjust=True).mean().values           #com=N-M/M
 
+def DMA(S, A):            #求X的动态移动平均，A作平滑因子   (次为核心函数，非指标）
+    return pd.Series(S).ewm(alpha=A, adjust=False).mean().values
+  
 def AVEDEV(S,N):           #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     return pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean()).values 
 
@@ -177,8 +180,8 @@ def BRAR(OPEN,CLOSE,HIGH,LOW,M1=26):                 #BRAR-ARBR 情绪指标
     BR = SUM(MAX(0, HIGH - REF(CLOSE, 1)), M1) / SUM(MAX(0, REF(CLOSE, 1) - LOW), M1) * 100
     return AR, BR
 
-def DMA(CLOSE,N1=10,N2=50,M=10):                     #平行线差指标  
-    DIF=MA(CLOSE,N1)-MA(CLOSE,N2);    DIFMA=MA(DIF,M)
+def DFMA(CLOSE,N1=10,N2=50,M=10):                    #平行线差指标 
+    DIF=MA(CLOSE,N1)-MA(CLOSE,N2); DIFMA=MA(DIF,M)   #通达信指标叫DMA 同花顺叫新DMA
     return DIF,DIFMA
 
 def MTM(CLOSE,N=12,M=6):                             #动量指标
