@@ -1,11 +1,11 @@
 # MyTT 麦语言-通达信-同花顺指标实现     https://github.com/mpquant/MyTT
 # Python2老版本pandas特别的MyTT：      https://github.com/mpquant/MyTT/blob/main/MyTT_python2.py 
 # V2.1 2021-6-6   新增 BARSLAST函数
-# V2.2 2021-6-8   新增 SLOPE,FORCAST线性回归，和回归预测函数
+# V2.2 2021-6-8   新增 SLOPE,FORCAST线性回归，和回归预测函数 
 # V2.3 2021-6-13  新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
 # V2.4 2021-6-27  新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
 # V2.5 2021-8-14  修正 CROSS穿越函数逻辑和通达信一致
-# V2.6 2021-10-23 修正 SMA函数 DMA函数
+# V2.7 2021-11-21 修正 SLOPE函数
   
 import numpy as np; import pandas as pd
 
@@ -52,10 +52,8 @@ def DMA(S, A):            #求S的动态移动平均，A作平滑因子   (此�
 def AVEDEV(S,N):           #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     return pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean()).values 
 
-def SLOPE(S,N,RS=False):    #返S序列N周期回线性回归斜率 (默认只返回斜率,不返回整个直线序列)
-    M=pd.Series(S[-N:]);   poly = np.polyfit(M.index, M.values,deg=1);    Y=np.polyval(poly, M.index); 
-    if RS: return Y[1]-Y[0],Y
-    return Y[1]-Y[0]
+def SLOPE(S, N):           #返S序列N周期回线性回归斜率        
+    return pd.Series(S).rolling(N).apply(lambda x: np.polyfit(x.index,x.values,deg=1)[0],raw=False).values  
 
   
 #------------------   1级：应用层函数(通过0级核心函数实现） ----------------------------------
@@ -79,8 +77,7 @@ def BARSLAST(S_BOOL):                  #上一次条件成立到当前的周期
     return len(S_BOOL)-int(M[-1])-1  if M.size>0 else -1
 
 def FORCAST(S,N):                      #返S序列N周期回线性回归后的预测值
-    K,Y=SLOPE(S,N,RS=True)
-    return Y[-1]+K
+    return S+SLOPE(S,N)    
   
 def CROSS(S1,S2):                      #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))     判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))
     CROSS_BOOL=IF(S1>S2, True ,False) 
