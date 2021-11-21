@@ -5,7 +5,7 @@
 # V2.3 2021-6-13  新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
 # V2.4 2021-6-27  新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
 # V2.5 2021-8-14  修正 CROSS穿越函数逻辑和通达信一致
-# V2.7 2021-11-21 修正 SLOPE函数, 感谢qzhjiang对SLOPE,SMA等函数的指正
+# V2.7 2021-11-21 修正 SLOPE函数,新加FILTER  感谢qzhjiang对SLOPE,SMA等函数的指正
   
 import numpy as np; import pandas as pd
 
@@ -72,6 +72,11 @@ def EXIST(S_BOOL, N=5):                # EXIST(CLOSE>3010, N=5)  n日内是否�
     R=SUM(S_BOOL,N)    
     return IF(R>0, True ,False)
 
+def FILTER(S, N):                      #FILTER函数，S满足条件后，将其后N周期内的数据置为0, FILTER(C==H,5)
+    for i in range(len(S)):            #例：FILTER(C==H,5) 涨停后，后5天不再发出信号
+        if S[i]: S[i+1:i+1+N]=0          
+    return S    
+  
 def BARSLAST(S_BOOL):                  #上一次条件成立到当前的周期  
     M=np.argwhere(S_BOOL);             # BARSLAST(CLOSE/REF(CLOSE)>=1.1) 上一次涨停到今天的天数
     return len(S_BOOL)-int(M[-1])-1  if M.size>0 else -1
