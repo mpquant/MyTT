@@ -5,7 +5,7 @@
 # V2.3 2021-6-13  新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
 # V2.4 2021-6-27  新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
 # V2.5 2021-8-14  修正 CROSS穿越函数逻辑和通达信一致
-# V2.7 2021-11-21 修正SLOPE,BARSLAST函数,新加FILTER  感谢qzhjiang对SLOPE,SMA等函数的指正
+# V2.7 2021-11-21 修正SLOPE,BARSLAST,函数,新加FILTER,LONGCROSS, 感谢qzhjiang对SLOPE,SMA等函数的指正
   
 import numpy as np; import pandas as pd
 
@@ -94,6 +94,11 @@ def CROSS(S1,S2):                      #判断向上金叉穿越 CROSS(MA(C,5),M
     CROSS_BOOL=IF(S1>S2, True ,False) 
     return (COUNT(CROSS_BOOL>0,2)==1)*CROSS_BOOL #上穿：昨天0 今天1   下穿：昨天1 今天0
 
+def LONGCROSS(S1,S2,N):                #两条线维持一定周期后交叉,S1在N周期内都小于S2,本周期从S1下方向上穿过S2时返回1,否则返回0   
+    T=REF(EVERY(S1<S2,N),1);  T[0]=0;  #前一天一致是在下方
+    CROSS_BOOL=IF(S1>S2, True ,False) * T
+    return np.array((COUNT(CROSS_BOOL>0,2)==1)*CROSS_BOOL,dtype=int)  
+  
   
 #------------------   2级：技术指标函数(全部通过0级，1级函数实现） ------------------------------
 def MACD(CLOSE,SHORT=12,LONG=26,M=9):             # EMA的关系，S取120日，和雪球小数点2位相同
