@@ -76,8 +76,9 @@ def BARSLAST(S_BOOL):                  #上一次条件成立到当前的周期
     M=np.argwhere(S_BOOL);             # BARSLAST(CLOSE/REF(CLOSE)>=1.1) 上一次涨停到今天的天数
     return len(S_BOOL)-int(M[-1])-1  if M.size>0 else -1
 
-def FORCAST(S,N):                      #返S序列N周期回线性回归后的预测值
-    return S+SLOPE(S,N)    
+def FORCAST(S,N):                      #返S序列N周期回线性回归后的预测值, 返回单值，还不完美
+    M=pd.Series(S[-N:]);      poly = np.polyfit(M.index, M.values,deg=1);     
+    return np.polyval(poly, M.index)[-1] 
   
 def CROSS(S1,S2):                      #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))     判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))
     CROSS_BOOL=IF(S1>S2, True ,False) 
