@@ -5,7 +5,7 @@
 # V2.3 2021-6-13  新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
 # V2.4 2021-6-27  新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
 # V2.5 2021-8-14  修正 CROSS穿越函数逻辑和通达信一致
-# V2.7 2021-11-21 修正 SLOPE函数
+# V2.7 2021-11-21 修正 SLOPE函数, 感谢qzhjiang对SLOPE,SMA等函数的指正
   
 import numpy as np; import pandas as pd
 
