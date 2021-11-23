@@ -6,7 +6,7 @@
 # V2.4 2021-6-27  新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
 # V2.5 2021-8-14  修正 CROSS穿越函数逻辑和通达信一致
 # V2.7 2021-11-21 修正SLOPE,BARSLAST,函数,新加FILTER,LONGCROSS, 感谢qzhjiang对SLOPE,SMA等函数的指正
-# V2.8 2021-11-23 修正FORCAST函数,欢迎qzhjiang,stanene,bcq加入社群，一起来完善myTT库
+# V2.8 2021-11-23 修正FORCAST,WMA函数,欢迎qzhjiang,stanene,bcq加入社群，一起来完善myTT库
   
 import numpy as np; import pandas as pd
 
@@ -49,6 +49,10 @@ def SMA(S, N, M=1):       #中国式的SMA,至少需要120周期才精确 (雪�
 
 def DMA(S, A):            #求S的动态移动平均，A作平滑因子   (此为核心函数，非指标）
     return pd.Series(S).ewm(alpha=A, adjust=False).mean().values
+
+def WMA(S, N):            #通达信S序列的N日加权移动平均 感谢jqz1226提供
+    weights = np.array(range(1,N + 1));    w = weights/np.sum(weights)    
+    return  pd.Series(S).rolling(N).apply(lambda x:np.sum(w*x),raw=False).values
   
 def AVEDEV(S, N):         #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     return pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean()).values 
