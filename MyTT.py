@@ -6,6 +6,7 @@
 # V2.4 2021-6-27  新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
 # V2.5 2021-8-14  修正 CROSS穿越函数逻辑和通达信一致
 # V2.7 2021-11-21 修正SLOPE,BARSLAST,函数,新加FILTER,LONGCROSS, 感谢qzhjiang对SLOPE,SMA等函数的指正
+# V2.8 2021-11-23 修正FORCAST函数,欢迎qzhjiang,stanene,bcq加入社群，一起来完善myTT库
   
 import numpy as np; import pandas as pd
 
@@ -23,7 +24,7 @@ def REF(S, N=1):          #对序列整体下移动N,返回序列(shift后会产
     return pd.Series(S).shift(N).values  
 
 def DIFF(S, N=1):         #前一个值减后一个值,前面会产生nan 
-    return pd.Series(S).diff(N)  #np.diff(S)直接删除nan，会少一行
+    return pd.Series(S).diff(N).values     #np.diff(S)直接删除nan，会少一行
 
 def STD(S,N):             #求序列的N日标准差，返回序列    
     return  pd.Series(S).rolling(N).std(ddof=0).values     
@@ -32,12 +33,12 @@ def IF(S_BOOL,S_TRUE,S_FALSE):   #序列布尔判断 return=S_TRUE if S_BOOL==Tr
     return np.where(S_BOOL, S_TRUE, S_FALSE)
 
 def SUM(S, N):            #对序列求N天累计和，返回序列    N=0对序列所有依次求和         
-    return pd.Series(S).rolling(N).sum().values if N>0 else pd.Series(S).cumsum()  
+    return pd.Series(S).rolling(N).sum().values if N>0 else pd.Series(S).cumsum().values  
 
-def HHV(S,N):             # HHV(C, 5)  # 最近5天收盘最高价        
+def HHV(S,N):             #HHV(C, 5)  # 最近5天收盘最高价        
     return pd.Series(S).rolling(N).max().values     
 
-def LLV(S,N):             # LLV(C, 5)  # 最近5天收盘最低价     
+def LLV(S,N):             #LLV(C, 5)  # 最近5天收盘最低价     
     return pd.Series(S).rolling(N).min().values    
 
 def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需要120周期     alpha=2/(span+1)    
@@ -49,12 +50,14 @@ def SMA(S, N, M=1):       #中国式的SMA,至少需要120周期才精确 (雪�
 def DMA(S, A):            #求S的动态移动平均，A作平滑因子   (此为核心函数，非指标）
     return pd.Series(S).ewm(alpha=A, adjust=False).mean().values
   
-def AVEDEV(S,N):           #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
+def AVEDEV(S, N):         #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     return pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean()).values 
 
-def SLOPE(S, N):           #返S序列N周期回线性回归斜率        
+def SLOPE(S, N):          #返S序列N周期回线性回归斜率        
     return pd.Series(S).rolling(N).apply(lambda x: np.polyfit(x.index,x.values,deg=1)[0],raw=False).values  
 
+def FORCAST(S, N):        #返回S序列N周期回线性回归后的预测值， jqz1226改进成序列出    
+    return pd.Series(S).rolling(N).apply(lambda x:np.polyval(np.polyfit(range(N),x,deg=1),N-1),raw=False).values  
   
 #------------------   1级：应用层函数(通过0级核心函数实现） ----------------------------------
 def COUNT(S_BOOL, N):                  # COUNT(CLOSE>O, N):  最近N天满足S_BOO的天数  True的天数
@@ -84,11 +87,7 @@ def BARSLAST(S):                       # 上一次条件成立到当前的周期
     for i in range(len(M)):            # 返回序列值
          if M[i]: M[i]=0; t=1 
          else:  M[i]=t;   t=t+1
-    return M
-  
-def FORCAST(S,N):                      #返S序列N周期回线性回归后的预测值, 返回单值，还不完美
-    M=pd.Series(S[-N:]);      poly = np.polyfit(M.index, M.values,deg=1);     
-    return np.polyval(poly, M.index)[-1] 
+    return M   
   
 def CROSS(S1,S2):                      #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))     判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))
     CROSS_BOOL=IF(S1>S2, True ,False) 
