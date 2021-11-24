@@ -363,7 +363,12 @@ plt.plot(up,label='唐安奇-上轨');     plt.plot(mid,label='唐安奇-中轨'
 
 ### 需安装第三方库（无需ta-lib库，所有指标实现仅需要安装pandas既可）
 * pandas
- 
+
+
+### 代码贡献者Contributors 
+    火焰，jqz1226, stanene, bcq
+
+
 ----------------------------------------------------
 ### 团队其他开源项目 - 如果本项目能帮助到您，请右上角帮我们点亮 ★star 以示鼓励！
 * [MyTT 通达信,同花顺公式指标，文华麦语言的python实现](https://github.com/mpquant/MyTT)
