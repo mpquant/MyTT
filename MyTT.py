@@ -8,6 +8,9 @@
 # V2.7 2021-11-21 修正SLOPE,BARSLAST,函数,新加FILTER,LONGCROSS, 感谢qzhjiang对SLOPE,SMA等函数的指正
 # V2.8 2021-11-23 修正FORCAST,WMA函数,欢迎qzhjiang,stanene,bcq加入社群，一起来完善myTT库
   
+
+#以下所有函数如无特别说明，输入参数S均为numpy序列或者列表list，N为整型int
+
 import numpy as np; import pandas as pd
 
 #------------------ 0级：核心工具函数 --------------------------------------------      
@@ -47,10 +50,10 @@ def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需�
 def SMA(S, N, M=1):       #中国式的SMA,至少需要120周期才精确 (雪球180周期)    alpha=1/(1+com)    
     return pd.Series(S).ewm(alpha=M/N,adjust=True).mean().values           #com=N-M/M
 
-def DMA(S, A):            #求S的动态移动平均，A作平滑因子   (此为核心函数，非指标）
+def DMA(S, A):            #求S的动态移动平均，A作平滑因子,必须 0<A<1  (此为核心函数，非指标）
     return pd.Series(S).ewm(alpha=A, adjust=False).mean().values
 
-def WMA(S, N):            #通达信S序列的N日加权移动平均 感谢jqz1226提供
+def WMA(S, N):            #通达信S序列的N日加权移动平均 Yn = (1*X1+2*X2+3*X3+...+n*Xn)/(1+2+3+...+Xn)
     weights = np.array(range(1,N + 1));    w = weights/np.sum(weights)    
     return  pd.Series(S).rolling(N).apply(lambda x:np.sum(w*x),raw=False).values
   
@@ -64,11 +67,11 @@ def FORCAST(S, N):        #返回S序列N周期回线性回归后的预测值，
     return pd.Series(S).rolling(N).apply(lambda x:np.polyval(np.polyfit(range(N),x,deg=1),N-1),raw=False).values  
   
 #------------------   1级：应用层函数(通过0级核心函数实现） ----------------------------------
-def COUNT(S_BOOL, N):                  # COUNT(CLOSE>O, N):  最近N天满足S_BOO的天数  True的天数
-    return SUM(S_BOOL,N)    
+def COUNT(S, N):                       # COUNT(CLOSE>O, N):  最近N天满足S_BOO的天数  True的天数
+    return SUM(S,N)    
 
-def EVERY(S_BOOL, N):                  # EVERY(CLOSE>O, 5)   最近N天是否都是True
-    R=SUM(S_BOOL, N)
+def EVERY(S, N):                       # EVERY(CLOSE>O, 5)   最近N天是否都是True
+    R=SUM(S, N)
     return  IF(R==N, True, False)
   
 def LAST(S, A, B):                     #从前A日到前B日一直满足S_BOOL条件  
