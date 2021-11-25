@@ -10,6 +10,7 @@
   
 
 #以下所有函数如无特别说明，输入参数S均为numpy序列或者列表list，N为整型int
+#应用层1级函数完美兼容通达信或同花顺，具体使用方法请参考通达信
 
 import numpy as np; import pandas as pd
 
@@ -71,18 +72,13 @@ def COUNT(S, N):                       # COUNT(CLOSE>O, N):  最近N天满足S_B
     return SUM(S,N)    
 
 def EVERY(S, N):                       # EVERY(CLOSE>O, 5)   最近N天是否都是True
-    R=SUM(S, N)
-    return  IF(R==N, True, False)
+    return  IF(SUM(S,N)==N,True,False)
+                    
+def LAST(S, A, B):                     #从前A日到前B日一直满足S_BOOL条件, 要求A>B & A>0 & B>0 
+    return np.array(pd.Series(S).rolling(A+1).apply(lambda x:np.all(x[::-1][B:]),raw=False),dtype=bool)
   
-def LAST(S, A, B):                     #从前A日到前B日一直满足S_BOOL条件  
-    S=np.where(S,1,0);  M=np.where(S,0,0);  B=B-1
-    for i in range(A,len(S)):          #要求A>B   例：LAST(CLOSE>OPEN,5,3)  5天前到3天前是否都收阳线 
-        M[i]=1 if S[i-A:i-B].sum()==(A-B) else 0        
-    return M                          
-     
-def EXIST(S_BOOL, N=5):                # EXIST(CLOSE>3010, N=5)  n日内是否存在一天大于3000点
-    R=SUM(S_BOOL,N)    
-    return IF(R>0, True ,False)
+def EXIST(S, N):                       # EXIST(CLOSE>3010, N=5)  n日内是否存在一天大于3000点  
+    return IF(SUM(S,N)>0,True,False)
 
 def FILTER(S, N):                      # FILTER函数，S满足条件后，将其后N周期内的数据置为0, FILTER(C==H,5)
     for i in range(len(S)):            # 例：FILTER(C==H,5) 涨停后，后5天不再发出信号
@@ -100,13 +96,13 @@ def CROSS(S1, S2):                     #判断向上金叉穿越 CROSS(MA(C,5),M
     S = np.nan_to_num(S1) > np.nan_to_num(S2)         
     return np.concatenate(([False], np.logical_not(S[:-1]) & S[1:]))   
 
+
+def LONGCROSS(S1,S2,N):                #两条线维持一定周期后交叉,S1在N周期内都小于S2,本周期从S1下方向上穿过S2时返回1,否则返回0      
+    T=np.logical_and(REF(EVERY(S1<S2,N),1),(S1>S2))
+    return  np.array(T,dtype=bool)     #序列进序列出 
+    
   
-def LONGCROSS(S1,S2,N):                #两条线维持一定周期后交叉,S1在N周期内都小于S2,本周期从S1下方向上穿过S2时返回1,否则返回0   
-    T=REF(EVERY(S1<S2,N),1);  T[0]=0;  #前一天一致是在下方
-    CROSS_BOOL=IF(S1>S2, True ,False) * T
-    return np.array((COUNT(CROSS_BOOL>0,2)==1)*CROSS_BOOL,dtype=int)  
-  
-  
+
 #------------------   2级：技术指标函数(全部通过0级，1级函数实现） ------------------------------
 def MACD(CLOSE,SHORT=12,LONG=26,M=9):             # EMA的关系，S取120日，和雪球小数点2位相同
     DIF = EMA(CLOSE,SHORT)-EMA(CLOSE,LONG);  
