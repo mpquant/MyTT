@@ -89,12 +89,12 @@ def FILTER(S, N):                      # FILTER函数，S满足条件后，将�
         if S[i]: S[i+1:i+1+N]=0        # 返回序列值  
     return S    
   
-def BARSLAST(S):                       # 上一次条件成立到当前的周期,序列进序列出  
-    M=np.where(S,1,0);  t=1;           # BARSLAST(CLOSE/REF(CLOSE)>=1.1) 上一次涨停到今天的天数    
-    for i in range(len(M)):            # 返回序列值
-         if M[i]: M[i]=0; t=1 
-         else:  M[i]=t;   t=t+1
-    return M   
+def BARSLAST(S):                      #上一次条件成立到当前的周期, BARSLAST(C/REF(C,1)>=1.1) 上一次涨停到今天的天数 
+    M=np.concatenate(([0],np.where(S,1,0)))  
+    for i in range(1, len(M)):  
+        M[i]=0 if M[i] else M[i-1]+1    
+    return M[1:]                       #序列进序列出 
+      
   
 def CROSS(S1, S2):                     #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))  判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))  by jqz1226
     S = np.nan_to_num(S1) > np.nan_to_num(S2)         
