@@ -61,7 +61,7 @@ def AVEDEV(S, N):         #平均绝对偏差  (序列与其平均值的绝对�
     return pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean()).values 
 
 def SLOPE(S, N):          #返S序列N周期回线性回归斜率        
-    return pd.Series(S).rolling(N).apply(lambda x: np.polyfit(x.index,x.values,deg=1)[0],raw=False).values  
+    return pd.Series(S).rolling(N).apply(lambda x: np.polyfit(x.index,x,deg=1)[0],raw=False).values  
 
 def FORCAST(S, N):        #返回S序列N周期回线性回归后的预测值， jqz1226改进成序列出    
     return pd.Series(S).rolling(N).apply(lambda x:np.polyval(np.polyfit(range(N),x,deg=1),N-1),raw=False).values  
@@ -96,8 +96,8 @@ def BARSLAST(S):                       # 上一次条件成立到当前的周期
          else:  M[i]=t;   t=t+1
     return M   
   
-def CROSS(S1, S2):                      #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))   判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))  
-    S = np.nan_to_num(S1) > np.nan_to_num(S2)  
+def CROSS(S1, S2):                     #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))  判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))  by jqz1226
+    S = np.nan_to_num(S1) > np.nan_to_num(S2)         
     return np.concatenate(([False], np.logical_not(S[:-1]) & S[1:]))   
 
   
