@@ -96,10 +96,11 @@ def BARSLAST(S):                       # 上一次条件成立到当前的周期
          else:  M[i]=t;   t=t+1
     return M   
   
-def CROSS(S1,S2):                      #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))     判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))
-    CROSS_BOOL=IF(S1>S2, True ,False) 
-    return (COUNT(CROSS_BOOL>0,2)==1)*CROSS_BOOL #上穿：昨天0 今天1   下穿：昨天1 今天0
+def CROSS(S1, S2):                      #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))   判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))  
+    S = np.nan_to_num(S1) > np.nan_to_num(S2)  
+    return np.concatenate(([False], np.logical_not(S[:-1]) & S[1:]))   
 
+  
 def LONGCROSS(S1,S2,N):                #两条线维持一定周期后交叉,S1在N周期内都小于S2,本周期从S1下方向上穿过S2时返回1,否则返回0   
     T=REF(EVERY(S1<S2,N),1);  T[0]=0;  #前一天一致是在下方
     CROSS_BOOL=IF(S1>S2, True ,False) * T
