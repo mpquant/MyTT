@@ -49,14 +49,14 @@ def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需�
     return pd.Series(S).ewm(span=N, adjust=False).mean().values     
 
 def SMA(S, N, M=1):       #中国式的SMA,至少需要120周期才精确 (雪球180周期)    alpha=1/(1+com)    
-    return pd.Series(S).ewm(alpha=M/N,adjust=True).mean().values           #com=N-M/M
+    return pd.Series(S).ewm(alpha=M/N,adjust=False).mean().values           #com=N-M/M
 
 def DMA(S, A):            #求S的动态移动平均，A作平滑因子,必须 0<A<1  (此为核心函数，非指标）
     return pd.Series(S).ewm(alpha=A, adjust=False).mean().values
 
 def WMA(S, N):            #通达信S序列的N日加权移动平均 Yn = (1*X1+2*X2+3*X3+...+n*Xn)/(1+2+3+...+Xn)
-    weights = np.array(range(1,N + 1));    w = weights/np.sum(weights)    
-    return  pd.Series(S).rolling(N).apply(lambda x:np.sum(w*x),raw=False).values
+    weights = np.array(range(1,N + 1));    w = weights/np.sum(weights)      
+    return  pd.Series(S).rolling(N).apply(lambda x:np.sum(w*x),raw=False).values    #by jqz1226
   
 def AVEDEV(S, N):         #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     return pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean()).values 
@@ -90,18 +90,14 @@ def BARSLAST(S):                      #上一次条件成立到当前的周期, 
     for i in range(1, len(M)):  
         M[i]=0 if M[i] else M[i-1]+1    
     return M[1:]                       #序列进序列出 
-      
-  
+        
 def CROSS(S1, S2):                     #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))  判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))  by jqz1226
     S = np.nan_to_num(S1) > np.nan_to_num(S2)         
     return np.concatenate(([False], np.logical_not(S[:-1]) & S[1:]))   
-
-
-def LONGCROSS(S1,S2,N):                #两条线维持一定周期后交叉,S1在N周期内都小于S2,本周期从S1下方向上穿过S2时返回1,否则返回0      
-    T=np.logical_and(REF(EVERY(S1<S2,N),1),(S1>S2))
-    return  np.array(T,dtype=bool)     #序列进序列出 
     
-  
+def LONGCROSS(S1,S2,N):                #两条线维持一定周期后交叉,S1在N周期内都小于S2,本周期从S1下方向上穿过S2时返回1,否则返回0         
+    return  np.array(np.logical_and(LAST(S1<S2,N,1),(S1>S2)),dtype=bool)     #序列进序列出 
+    
 
 #------------------   2级：技术指标函数(全部通过0级，1级函数实现） ------------------------------
 def MACD(CLOSE,SHORT=12,LONG=26,M=9):             # EMA的关系，S取120日，和雪球小数点2位相同
