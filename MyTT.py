@@ -21,7 +21,7 @@ def ABS(S):      return np.abs(S)            #返回N的绝对值
 def MAX(S1,S2):  return np.maximum(S1,S2)    #序列max
 def MIN(S1,S2):  return np.minimum(S1,S2)    #序列min
          
-def MA(S,N):              #求序列的N日平均值，返回序列                    
+def MA(S,N):              #求序列的N日简单移动平均值，返回序列                    
     return pd.Series(S).rolling(N).mean().values    
 
 def REF(S, N=1):          #对序列整体下移动N,返回序列(shift后会产生NAN)    
@@ -33,8 +33,8 @@ def DIFF(S, N=1):         #前一个值减后一个值,前面会产生nan
 def STD(S,N):             #求序列的N日标准差，返回序列    
     return  pd.Series(S).rolling(N).std(ddof=0).values     
 
-def IF(S_BOOL,S_TRUE,S_FALSE):   #序列布尔判断 return=S_TRUE if S_BOOL==True  else  S_FALSE
-    return np.where(S_BOOL, S_TRUE, S_FALSE)
+def IF(S, A, B):          #序列布尔判断 return=A  if S==True  else  B
+    return np.where(S, A, B)
 
 def SUM(S, N):            #对序列求N天累计和，返回序列    N=0对序列所有依次求和         
     return pd.Series(S).rolling(N).sum().values if N>0 else pd.Series(S).cumsum().values  
@@ -55,8 +55,7 @@ def DMA(S, A):            #求S的动态移动平均，A作平滑因子,必须 0
     return pd.Series(S).ewm(alpha=A, adjust=False).mean().values
 
 def WMA(S, N):            #通达信S序列的N日加权移动平均 Yn = (1*X1+2*X2+3*X3+...+n*Xn)/(1+2+3+...+Xn)
-    weights = np.array(range(1,N + 1));    w = weights/np.sum(weights)      
-    return  pd.Series(S).rolling(N).apply(lambda x:np.sum(w*x),raw=False).values    #by jqz1226
+    return pd.Series(S).rolling(N).apply(lambda x:x[::-1].cumsum().sum()*2/N/(N+1),raw=False).values 
   
 def AVEDEV(S, N):         #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     return pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean()).values 
@@ -85,14 +84,13 @@ def FILTER(S, N):                      # FILTER函数，S满足条件后，将�
         if S[i]: S[i+1:i+1+N]=0        # 返回序列值  
     return S    
   
-def BARSLAST(S):                      #上一次条件成立到当前的周期, BARSLAST(C/REF(C,1)>=1.1) 上一次涨停到今天的天数 
+def BARSLAST(S):                       #上一次条件成立到当前的周期, BARSLAST(C/REF(C,1)>=1.1) 上一次涨停到今天的天数 
     M=np.concatenate(([0],np.where(S,1,0)))  
-    for i in range(1, len(M)):  
-        M[i]=0 if M[i] else M[i-1]+1    
-    return M[1:]                       #序列进序列出 
+    for i in range(1, len(M)):  M[i]=0 if M[i] else M[i-1]+1    
+    return M[1:]                       
         
-def CROSS(S1, S2):                     #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))  判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))  by jqz1226
-    S = np.nan_to_num(S1) > np.nan_to_num(S2)         
+def CROSS(S1, S2):                     #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))  判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))  
+    S = S1 > S2                        #不使用0级工具函数, 以便CROSS可轻装上阵, 随用随取    by jqz1226
     return np.concatenate(([False], np.logical_not(S[:-1]) & S[1:]))   
     
 def LONGCROSS(S1,S2,N):                #两条线维持一定周期后交叉,S1在N周期内都小于S2,本周期从S1下方向上穿过S2时返回1,否则返回0         
