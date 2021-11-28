@@ -5,8 +5,9 @@
 # V2.3 2021-6-13  新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
 # V2.4 2021-6-27  新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
 # V2.5 2021-8-14  修正 CROSS穿越函数逻辑和通达信一致
-# V2.7 2021-11-21 修正SLOPE,BARSLAST,函数,新加FILTER,LONGCROSS, 感谢qzhjiang对SLOPE,SMA等函数的指正
-# V2.8 2021-11-23 修正FORCAST,WMA函数,欢迎qzhjiang,stanene,bcq加入社群，一起来完善myTT库
+# V2.7 2021-11-21 修正 SLOPE,BARSLAST,函数,新加FILTER,LONGCROSS, 感谢qzhjiang对SLOPE,SMA等函数的指正
+# V2.8 2021-11-23 修正 FORCAST,WMA函数,欢迎qzhjiang,stanene,bcq加入社群，一起来完善myTT库
+# V2.9 2021-11-28 新增 HHVBARS,LLVBARS,CONST功能函数
   
 
 #以下所有函数如无特别说明，输入参数S均为numpy序列或者列表list，N为整型int
@@ -20,10 +21,7 @@ def RET(S,N=1):  return np.array(S)[-N]      #返回序列倒数第N个值,默�
 def ABS(S):      return np.abs(S)            #返回N的绝对值
 def MAX(S1,S2):  return np.maximum(S1,S2)    #序列max
 def MIN(S1,S2):  return np.minimum(S1,S2)    #序列min
-         
-def MA(S,N):              #求序列的N日简单移动平均值，返回序列                    
-    return pd.Series(S).rolling(N).mean().values    
-
+           
 def REF(S, N=1):          #对序列整体下移动N,返回序列(shift后会产生NAN)    
     return pd.Series(S).shift(N).values  
 
@@ -39,12 +37,24 @@ def IF(S, A, B):          #序列布尔判断 return=A  if S==True  else  B
 def SUM(S, N):            #对序列求N天累计和，返回序列    N=0对序列所有依次求和         
     return pd.Series(S).rolling(N).sum().values if N>0 else pd.Series(S).cumsum().values  
 
-def HHV(S,N):             #HHV(C, 5)  # 最近5天收盘最高价        
+def CONST(S):             #返回序列S最后的值组成常量序列
+    return np.full(len(S),S[-1])
+  
+def HHV(S,N):             #HHV(C, 5) 最近5天收盘最高价        
     return pd.Series(S).rolling(N).max().values     
 
-def LLV(S,N):             #LLV(C, 5)  # 最近5天收盘最低价     
+def LLV(S,N):             #LLV(C, 5) 最近5天收盘最低价     
     return pd.Series(S).rolling(N).min().values    
+    
+def HHVBARS(S,N):         #求N周期内S最高值到当前周期数, 返回序列
+    return pd.Series(S).rolling(N).apply(lambda x: np.argmax(x[::-1]),raw=True).values 
 
+def LLVBARS(S,N):         #求N周期内S最低值到当前周期数, 返回序列
+    return pd.Series(S).rolling(N).apply(lambda x: np.argmin(x[::-1]),raw=True).values    
+  
+def MA(S,N):              #求序列的N日简单移动平均值，返回序列                    
+    return pd.Series(S).rolling(N).mean().values  
+  
 def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需要120周期     alpha=2/(span+1)    
     return pd.Series(S).ewm(span=N, adjust=False).mean().values     
 
