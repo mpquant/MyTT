@@ -21,7 +21,9 @@ def RET(S,N=1):  return np.array(S)[-N]      #返回序列倒数第N个值,默�
 def ABS(S):      return np.abs(S)            #返回N的绝对值
 def MAX(S1,S2):  return np.maximum(S1,S2)    #序列max
 def MIN(S1,S2):  return np.minimum(S1,S2)    #序列min
-           
+def IF(S,A,B):   return np.where(S,A,B)      #序列布尔判断 return=A  if S==True  else  B
+
+
 def REF(S, N=1):          #对序列整体下移动N,返回序列(shift后会产生NAN)    
     return pd.Series(S).shift(N).values  
 
@@ -30,9 +32,6 @@ def DIFF(S, N=1):         #前一个值减后一个值,前面会产生nan
 
 def STD(S,N):             #求序列的N日标准差，返回序列    
     return  pd.Series(S).rolling(N).std(ddof=0).values     
-
-def IF(S, A, B):          #序列布尔判断 return=A  if S==True  else  B
-    return np.where(S, A, B)
 
 def SUM(S, N):            #对序列求N天累计和，返回序列    N=0对序列所有依次求和         
     return pd.Series(S).rolling(N).sum().values if N>0 else pd.Series(S).cumsum().values  
@@ -75,16 +74,16 @@ def SLOPE(S, N):          #返S序列N周期回线性回归斜率
 
 def FORCAST(S, N):        #返回S序列N周期回线性回归后的预测值， jqz1226改进成序列出    
     return pd.Series(S).rolling(N).apply(lambda x:np.polyval(np.polyfit(range(N),x,deg=1),N-1),raw=True).values  
+
+def LAST(S, A, B):        #从前A日到前B日一直满足S_BOOL条件, 要求A>B & A>0 & B>=0 
+    return np.array(pd.Series(S).rolling(A+1).apply(lambda x:np.all(x[::-1][B:]),raw=True),dtype=bool)
   
 #------------------   1级：应用层函数(通过0级核心函数实现） ----------------------------------
 def COUNT(S, N):                       # COUNT(CLOSE>O, N):  最近N天满足S_BOO的天数  True的天数
     return SUM(S,N)    
 
 def EVERY(S, N):                       # EVERY(CLOSE>O, 5)   最近N天是否都是True
-    return  IF(SUM(S,N)==N,True,False)
-                    
-def LAST(S, A, B):                     #从前A日到前B日一直满足S_BOOL条件, 要求A>B & A>0 & B>0 
-    return np.array(pd.Series(S).rolling(A+1).apply(lambda x:np.all(x[::-1][B:]),raw=True),dtype=bool)
+    return  IF(SUM(S,N)==N,True,False)                    
   
 def EXIST(S, N):                       # EXIST(CLOSE>3010, N=5)  n日内是否存在一天大于3000点  
     return IF(SUM(S,N)>0,True,False)
@@ -99,9 +98,8 @@ def BARSLAST(S):                       #上一次条件成立到当前的周期,
     for i in range(1, len(M)):  M[i]=0 if M[i] else M[i-1]+1    
     return M[1:]                       
         
-def CROSS(S1, S2):                     #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))  判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))  
-    S = S1 > S2                        #不使用0级工具函数, 以便CROSS可轻装上阵, 随用随取    by jqz1226
-    return np.concatenate(([False], np.logical_not(S[:-1]) & S[1:]))   
+def CROSS(S1, S2):                     #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))  判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))   
+    return np.concatenate(([False], np.logical_not((S1>S2)[:-1]) & (S1>S2)[1:]))     #不使用0级函数,轻装上阵  by jqz1226
     
 def LONGCROSS(S1,S2,N):                #两条线维持一定周期后交叉,S1在N周期内都小于S2,本周期从S1下方向上穿过S2时返回1,否则返回0         
     return  np.array(np.logical_and(LAST(S1<S2,N,1),(S1>S2)),dtype=bool)     #序列进序列出 
