@@ -65,16 +65,16 @@ def DMA(S, A):            #求S的动态移动平均，A作平滑因子,必须 0
     return pd.Series(S).ewm(alpha=A, adjust=False).mean().values
 
 def WMA(S, N):            #通达信S序列的N日加权移动平均 Yn = (1*X1+2*X2+3*X3+...+n*Xn)/(1+2+3+...+Xn)
-    return pd.Series(S).rolling(N).apply(lambda x:x[::-1].cumsum().sum()*2/N/(N+1),raw=False).values 
+    return pd.Series(S).rolling(N).apply(lambda x:x[::-1].cumsum().sum()*2/N/(N+1),raw=True).values 
   
 def AVEDEV(S, N):         #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     return pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean()).values 
 
-def SLOPE(S, N):          #返S序列N周期回线性回归斜率        
-    return pd.Series(S).rolling(N).apply(lambda x: np.polyfit(x.index,x,deg=1)[0],raw=False).values  
+def SLOPE(S, N):          #返S序列N周期回线性回归斜率            
+    return pd.Series(S).rolling(N).apply(lambda x: np.polyfit(range(N),x,deg=1)[0],raw=True).values
 
 def FORCAST(S, N):        #返回S序列N周期回线性回归后的预测值， jqz1226改进成序列出    
-    return pd.Series(S).rolling(N).apply(lambda x:np.polyval(np.polyfit(range(N),x,deg=1),N-1),raw=False).values  
+    return pd.Series(S).rolling(N).apply(lambda x:np.polyval(np.polyfit(range(N),x,deg=1),N-1),raw=True).values  
   
 #------------------   1级：应用层函数(通过0级核心函数实现） ----------------------------------
 def COUNT(S, N):                       # COUNT(CLOSE>O, N):  最近N天满足S_BOO的天数  True的天数
@@ -84,7 +84,7 @@ def EVERY(S, N):                       # EVERY(CLOSE>O, 5)   最近N天是否都
     return  IF(SUM(S,N)==N,True,False)
                     
 def LAST(S, A, B):                     #从前A日到前B日一直满足S_BOOL条件, 要求A>B & A>0 & B>0 
-    return np.array(pd.Series(S).rolling(A+1).apply(lambda x:np.all(x[::-1][B:]),raw=False),dtype=bool)
+    return np.array(pd.Series(S).rolling(A+1).apply(lambda x:np.all(x[::-1][B:]),raw=True),dtype=bool)
   
 def EXIST(S, N):                       # EXIST(CLOSE>3010, N=5)  n日内是否存在一天大于3000点  
     return IF(SUM(S,N)>0,True,False)
