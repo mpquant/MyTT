@@ -7,7 +7,7 @@
 # V2.5 2021-8-14  修正 CROSS穿越函数逻辑和通达信一致
 # V2.7 2021-11-21 修正 SLOPE,BARSLAST,函数,新加FILTER,LONGCROSS, 感谢qzhjiang对SLOPE,SMA等函数的指正
 # V2.8 2021-11-23 修正 FORCAST,WMA函数,欢迎qzhjiang,stanene,bcq加入社群，一起来完善myTT库
-# V2.9 2021-11-28 新增 HHVBARS,LLVBARS,CONST功能函数
+# V2.9 2021-11-29 新增 HHVBARS,LLVBARS,CONST, VALUEWHEN功能函数
   
 
 #以下所有函数如无特别说明，输入参数S均为numpy序列或者列表list，N为整型int
@@ -104,7 +104,9 @@ def CROSS(S1, S2):                     #判断向上金叉穿越 CROSS(MA(C,5),M
 def LONGCROSS(S1,S2,N):                #两条线维持一定周期后交叉,S1在N周期内都小于S2,本周期从S1下方向上穿过S2时返回1,否则返回0         
     return  np.array(np.logical_and(LAST(S1<S2,N,1),(S1>S2)),dtype=bool)            # N=1时等同于CROSS(S1, S2)
     
-
+def VALUEWHEN(S, X):                   #当S条件成立时,取X的当前值,否则取VALUEWHEN的上个成立时的X值   by jqz1226
+    return pd.Series(np.where(S,X,np.nan)).ffill().values  
+    
 #------------------   2级：技术指标函数(全部通过0级，1级函数实现） ------------------------------
 def MACD(CLOSE,SHORT=12,LONG=26,M=9):             # EMA的关系，S取120日，和雪球小数点2位相同
     DIF = EMA(CLOSE,SHORT)-EMA(CLOSE,LONG);  
