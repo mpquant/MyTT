@@ -56,6 +56,15 @@ print('今天5日线是否上穿10日线',RET(CROSS(MA5,MA10)))
 print('最近5天收盘价全都大于10日线吗？',EVERY(CLOSE>MA10,5) )
 
 ```
+### 安装方法
+* 直接拷贝 MyTT.py到你的项目下 from MyTT import * 即可调用文件中的所有函数
+
+* 传统安装 pip install MyTT
+```python
+from  MyTT import *   #安装后测试程序       
+S=np.random.randint(1,99,[10])
+EMA(S,5)
+```
 
 
 ### MyTT库中的部分工具函数
