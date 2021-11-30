@@ -61,9 +61,9 @@ print('最近5天收盘价全都大于10日线吗？',EVERY(CLOSE>MA10,5) )
 
 * 传统安装 pip install MyTT
 ```python
-from  MyTT import *   #安装后测试程序       
-S=np.random.randint(1,99,[10])
-EMA(S,5)
+from  MyTT import *                 #声明调用MyTT， 请注意大小写
+S=np.random.randint(1,99,[10])      #生成1-99内的10个数序列 
+EMA(S,5)                            #对这个序列S进行5周期EMA指数平均计算
 ```
 
 
