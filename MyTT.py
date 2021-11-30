@@ -97,8 +97,14 @@ def BARSLAST(S):                       #上一次条件成立到当前的周期,
     for i in range(1, len(M)):  M[i]=0 if M[i] else M[i-1]+1    
     return M[1:]                       
 
+def BARSLASTCOUNT(S):                  # 统计连续满足S条件的周期数        by jqz1226
+    rt = np.zeros(len(S)+1)            # BARSLASTCOUNT(CLOSE>OPEN)表示统计连续收阳的周期数
+    for i in range(len(S)): rt[i+1]=rt[i]+1  if S[i] else rt[i+1]
+    return rt[1:]  
+  
 def BARSSINCEN(S, N):                  # N周期内第一次S条件成立到现在的周期数,N为常量  by jqz1226
     return pd.Series(S).rolling(N).apply(lambda x:N-1-np.argmax(x) if np.argmax(x) or x[0] else 0,raw=True).fillna(0).values.astype(int)
+
   
 def CROSS(S1, S2):                     #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))  判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))   
     return np.concatenate(([False], np.logical_not((S1>S2)[:-1]) & (S1>S2)[1:]))    # 不使用0级函数,移植方便  by jqz1226
