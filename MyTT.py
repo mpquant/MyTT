@@ -1,13 +1,13 @@
 # MyTT 麦语言-通达信-同花顺指标实现     https://github.com/mpquant/MyTT
 # Python2老版本pandas特别的MyTT：      https://github.com/mpquant/MyTT/blob/main/MyTT_python2.py 
-# V2.1 2021-6-6   新增 BARSLAST函数
-# V2.2 2021-6-8   新增 SLOPE,FORCAST线性回归，和回归预测函数 
-# V2.3 2021-6-13  新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
-# V2.4 2021-6-27  新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
-# V2.5 2021-8-14  修正 CROSS穿越函数逻辑和通达信一致
-# V2.7 2021-11-21 修正 SLOPE,BARSLAST,函数,新加FILTER,LONGCROSS, 感谢qzhjiang对SLOPE,SMA等函数的指正
-# V2.8 2021-11-23 修正 FORCAST,WMA函数,欢迎qzhjiang,stanene,bcq加入社群，一起来完善myTT库
-# V2.9 2021-11-29 新增 HHVBARS,LLVBARS,CONST, VALUEWHEN功能函数
+# V2.1  2021-6-6   新增 BARSLAST函数
+# V2.2  2021-6-8   新增 SLOPE,FORCAST线性回归，和回归预测函数 
+# V2.3  2021-6-13  新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
+# V2.4  2021-6-27  新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
+# V2.7  2021-11-21 修正 SLOPE,BARSLAST,函数,新加FILTER,LONGCROSS, 感谢qzhjiang对SLOPE,SMA等函数的指正
+# V2.8  2021-11-23 修正 FORCAST,WMA函数,欢迎qzhjiang,stanene,bcq加入社群，一起来完善myTT库
+# V2.9  2021-11-29 新增 HHVBARS,LLVBARS,CONST, VALUEWHEN功能函数
+# V2.92 2021-11-30 新增 BARSSINCEN函数,现在可以 pip install MyTT 完成安装   
   
 
 #以下所有函数如无特别说明，输入参数S均为numpy序列或者列表list，N为整型int
@@ -89,15 +89,17 @@ def EXIST(S, N):                       # EXIST(CLOSE>3010, N=5)  n日内是否�
     return IF(SUM(S,N)>0,True,False)
 
 def FILTER(S, N):                      # FILTER函数，S满足条件后，将其后N周期内的数据置为0, FILTER(C==H,5)
-    for i in range(len(S)):            # 例：FILTER(C==H,5) 涨停后，后5天不再发出信号
-        if S[i]: S[i+1:i+1+N]=0        # 返回序列值  
-    return S    
+    for i in range(len(S)): S[i+1:i+1+N]=0  if S[i] else S[i+1:i+1+N]        
+    return S                           # 例：FILTER(C==H,5) 涨停后，后5天不再发出信号 
   
 def BARSLAST(S):                       #上一次条件成立到当前的周期, BARSLAST(C/REF(C,1)>=1.1) 上一次涨停到今天的天数 
     M=np.concatenate(([0],np.where(S,1,0)))  
     for i in range(1, len(M)):  M[i]=0 if M[i] else M[i-1]+1    
     return M[1:]                       
-        
+
+def BARSSINCEN(S, N):                  # N周期内第一次S条件成立到现在的周期数,N为常量  by jqz1226
+    return pd.Series(S).rolling(N).apply(lambda x:N-1-np.argmax(x) if np.argmax(x) or x[0] else 0,raw=True).fillna(0).values.astype(int)
+  
 def CROSS(S1, S2):                     #判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))  判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))   
     return np.concatenate(([False], np.logical_not((S1>S2)[:-1]) & (S1>S2)[1:]))    # 不使用0级函数,移植方便  by jqz1226
     
@@ -106,7 +108,8 @@ def LONGCROSS(S1,S2,N):                #两条线维持一定周期后交叉,S1�
     
 def VALUEWHEN(S, X):                   #当S条件成立时,取X的当前值,否则取VALUEWHEN的上个成立时的X值   by jqz1226
     return pd.Series(np.where(S,X,np.nan)).ffill().values  
-    
+
+  
 #------------------   2级：技术指标函数(全部通过0级，1级函数实现） ------------------------------
 def MACD(CLOSE,SHORT=12,LONG=26,M=9):             # EMA的关系，S取120日，和雪球小数点2位相同
     DIF = EMA(CLOSE,SHORT)-EMA(CLOSE,LONG);  
