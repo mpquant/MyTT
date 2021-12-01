@@ -66,6 +66,17 @@ S=np.random.randint(1,99,[10])      #生成1-99内的10个数序列
 EMA(S,5)                            #对这个序列S进行5周期EMA指数平均计算
 ```
 
+### 教程和案例
+* [通达信公式转Python神器——MyTT库](https://www.joinquant.com/view/community/detail/a6cc7d1fb73a57dbac4b77044a33b15d)  
+
+* [利用MyTT库整合通达信指标公式](https://www.joinquant.com/view/community/detail/4237ebaa5db39a5a9a2195338e8be588)  
+
+* [MyTT库应用示例及计算精度验证](https://www.joinquant.com/view/community/detail/bd26874654a6f9f1958f23043ca06149)  
+
+* [如何在聚宽研究环境中建立myTT.py库文件](https://www.joinquant.com/view/community/detail/2abf0cc457352b59ef2e873ad7c4e430)  
+
+* [基于MyTT来编写Python版通达信指标](https://www.joinquant.com/view/community/detail/7a0297fb7bd717cfb2be40b4c8062eeb)  
+
 
 ### MyTT库中的部分工具函数
 * n天前的数据：`REF`
@@ -227,19 +238,6 @@ def BBI(CLOSE,M1=3,M2=6,M3=12,M4=20):    #BBI多空指标
     return (MA(CLOSE,M1)+MA(CLOSE,M2)+MA(CLOSE,M3)+MA(CLOSE,M4))/4  
 ```
 
-```python
-#DMI指标：用TALib库算出来的结果会发现和同花顺通达信等软件的结果不一样，是因为同花顺的公式和TA-Lib的计算公式不一样
-
-def DMI(CLOSE,HIGH,LOW,M1=14,M2=6):      #动向指标：结果和同花顺，通达信完全一致
-    TR = SUM(MAX(MAX(HIGH - LOW, ABS(HIGH - REF(CLOSE, 1))), ABS(LOW - REF(CLOSE, 1))), M1)
-    HD = HIGH - REF(HIGH, 1);     LD = REF(LOW, 1) - LOW
-    DMP = SUM(IF((HD > 0) & (HD > LD), HD, 0), M1)
-    DMM = SUM(IF((LD > 0) & (LD > HD), LD, 0), M1)
-    PDI = DMP * 100 / TR;         MDI = DMM * 100 / TR
-    ADX = MA(ABS(MDI - PDI) / (PDI + MDI) * 100, M2)
-    ADXR = (ADX + REF(ADX, M2)) / 2
-    return PDI, MDI, ADX, ADXR    
-```
 
 ```python
 def TAQ(HIGH,LOW,N):                         #唐安奇通道(海龟)交易指标，大道至简，能穿越牛熊
@@ -262,33 +260,14 @@ def TRIX(CLOSE,M1=12, M2=20):                #三重指数平滑平均线
     TRMA = MA(TRIX, M2)
     return TRIX, TRMA
 ```
-```python
-def DPO(CLOSE,M1=20, M2=10, M3=6):           #区间震荡线
-    DPO = CLOSE - REF(MA(CLOSE, M1), M2);    MADPO = MA(DPO, M3)
-    return DPO, MADPO
-```
+
 ```python
 def BRAR(OPEN,CLOSE,HIGH,LOW,M1=26):         #BRAR-ARBR 情绪指标  
     AR = SUM(HIGH - OPEN, M1) / SUM(OPEN - LOW, M1) * 100
     BR = SUM(MAX(0, HIGH - REF(CLOSE, 1)), M1) / SUM(MAX(0, REF(CLOSE, 1) - LOW), M1) * 100
     return AR, BR
 ```
-```python
-def DMA(CLOSE,N1=10,N2=50,M=10):             #平行线差指标  
-    DIF=MA(CLOSE,N1)-MA(CLOSE,N2);    DIFMA=MA(DIF,M)
-    return DIF,DIFMA
-```
-```python
-def VR(CLOSE,VOL,M1=26):                    #VR容量比率
-    LC = REF(CLOSE, 1)
-    return SUM(IF(CLOSE > LC, VOL, 0), M1) / SUM(IF(CLOSE <= LC, VOL, 0), M1) * 100
-```
-```python
-def EMV(HIGH,LOW,VOL,N=14,M=9):              #简易波动指标 
-    VOLUME=MA(VOL,N)/VOL;       MID=100*(HIGH+LOW-REF(HIGH+LOW,1))/(HIGH+LOW)
-    EMV=MA(MID*VOLUME*(HIGH-LOW)/MA(HIGH-LOW,N),N);    MAEMV=MA(EMV,M)
-    return EMV,MAEMV
-```
+
 ```python
 def MTM(CLOSE,N=12,M=6):                    #动量指标
     MTM=CLOSE-REF(CLOSE,N);         MTMMA=MA(MTM,M)
@@ -314,22 +293,10 @@ def MFI(CLOSE,HIGH,LOW,VOL,N=14):            #MFI指标是成交量的RSI指标
     V1=SUM(IF(TYP>REF(TYP,1),TYP*VOL,0),N)/SUM(IF(TYP<REF(TYP,1),TYP*VOL,0),N)  
     return 100-(100/(1+V1))    
 ``` 
-```python
-def MASS(HIGH,LOW,N1=9,N2=25,M=6):           #梅斯线
-    MASS=SUM(MA(HIGH-LOW,N1)/MA(MA(HIGH-LOW,N1),N1),N2)
-    MA_MASS=MA(MASS,M)
-    return MASS,MA_MASS
-``` 
-```python
-def ASI(OPEN,CLOSE,HIGH,LOW,M1=26,M2=10):   #振动升降指标
-    LC=REF(CLOSE,1);  AA=ABS(HIGH-LC);  BB=ABS(LOW-LC);
-    CC=ABS(HIGH-REF(LOW,1));   DD=ABS(LC-REF(OPEN,1));
-    R=IF( (AA>BB) & (AA>CC),AA+BB/2+DD/4,IF( (BB>CC) & (BB>AA),BB+AA/2+DD/4,CC+DD/4));
-    X=(CLOSE-LC+(CLOSE-OPEN)/2+LC-REF(OPEN,1));
-    SI=16*X/R*MAX(AA,BB);    ASI=SUM(SI,M1);    ASIT=MA(ASI,M2);
-    return ASI,ASIT            
 
-``` 
+
+
+* 更多指标看库文件  [MyTT.py](https://github.com/mpquant/MyTT/blob/main/MyTT.py)
 
 ### 因为语法的问题 =: 是不能用了，python就是=号 ，条件与是& ，条件或是|
 ```python
