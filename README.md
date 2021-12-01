@@ -57,13 +57,14 @@ print('最近5天收盘价全都大于10日线吗？',EVERY(CLOSE>MA10,5) )
 
 ```
 ### 安装方法
-* 直接拷贝 MyTT.py到你的项目下 from MyTT import * 即可调用文件中的所有函数
+* 直接拷贝 MyTT.py到你的项目下 `from MyTT import *` 即可调用文件中的所有函数
 
-* 传统安装 pip install MyTT
+* 传统标准库安装 `pip install MyTT`
+
 ```python
 from  MyTT import *                 #声明调用MyTT， 请注意大小写
 S=np.random.randint(1,99,[10])      #生成1-99内的10个数序列 
-EMA(S,5)                            #对这个序列S进行5周期EMA指数平均计算
+EMA(S,6)                            #对这个序列S进行6周期EMA指数平均计算
 ```
 
 ### 教程和案例
@@ -76,6 +77,8 @@ EMA(S,5)                            #对这个序列S进行5周期EMA指数平�
 * [如何在聚宽研究环境中建立myTT.py库文件](https://www.joinquant.com/view/community/detail/2abf0cc457352b59ef2e873ad7c4e430)  
 
 * [基于MyTT来编写Python版通达信指标](https://www.joinquant.com/view/community/detail/7a0297fb7bd717cfb2be40b4c8062eeb)  
+
+
 
 
 ### MyTT库中的部分工具函数
