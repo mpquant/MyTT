@@ -27,7 +27,7 @@ def SUMBARSFAST(X, A):
         k = np.searchsorted(Sigma[i + 1:], A[i] + Sigma[i])
         if k < length - i:  # 找到
             sumbars[length - i - 1] = k + 1
-    return sumbars.astype(int) 
+    return sumbars.astype(int)  
   
   
 
