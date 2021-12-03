@@ -30,7 +30,7 @@ def IF(S_BOOL,S_TRUE,S_FALSE):          #序列布尔判断 res=S_TRUE if S_BOOL
 def SUM(S, N):            #对序列求N天累计和，返回序列    N=0对序列所有依次求和         
     return  pd.rolling_sum(S,N)  if N>0 else pd.Series(S).cumsum()  
 
-def HHV(S,N):                          # HHV(C, 5)  # 最近5天收盘最高价        
+def HHV(S,N):                          # HHV(C, 5)  # 最近5天收盘最高价         
     return pd.rolling_max(S,N)
 
 def LLV(S,N):             # LLV(C, 5)  # 最近5天收盘最低价     
