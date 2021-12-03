@@ -67,7 +67,7 @@ S=np.random.randint(1,99,[10])      #生成1-99内的10个数序列
 EMA(S,6)                            #对这个序列S进行6周期EMA指数平均计算
 ```
 
-### 教程和案例
+### 教程和案例应用
 * [通达信公式转Python神器——MyTT库](https://www.joinquant.com/view/community/detail/a6cc7d1fb73a57dbac4b77044a33b15d)  
 
 * [利用MyTT库整合通达信指标公式](https://www.joinquant.com/view/community/detail/4237ebaa5db39a5a9a2195338e8be588)  
@@ -78,7 +78,7 @@ EMA(S,6)                            #对这个序列S进行6周期EMA指数平�
 
 * [基于MyTT来编写Python版通达信指标](https://www.joinquant.com/view/community/detail/7a0297fb7bd717cfb2be40b4c8062eeb)  
 
-
+* [MyTT基础函数EMA指数平均的公式推导](https://www.joinquant.com/view/community/detail/ab76489c8fdfd1f201b6df47f11a5360)
 
 
 ### MyTT库中的部分工具函数
