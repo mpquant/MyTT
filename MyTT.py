@@ -1,13 +1,13 @@
 # MyTT 麦语言-通达信-同花顺指标实现     https://github.com/mpquant/MyTT
 # Python2老版本pandas特别的MyTT：      https://github.com/mpquant/MyTT/blob/main/MyTT_python2.py 
-# V2.1  2021-6-6   新增 BARSLAST函数
-# V2.2  2021-6-8   新增 SLOPE,FORCAST线性回归，和回归预测函数 
+# V2.1  2021-6-6   新增 BARSLAST函数 SLOPE,FORCAST线性回归预测函数
 # V2.3  2021-6-13  新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
 # V2.4  2021-6-27  新增 EXPMA,OBV,MFI指标, 改进SMA核心函数(核心函数彻底无循环)
 # V2.7  2021-11-21 修正 SLOPE,BARSLAST,函数,新加FILTER,LONGCROSS, 感谢qzhjiang对SLOPE,SMA等函数的指正
 # V2.8  2021-11-23 修正 FORCAST,WMA函数,欢迎qzhjiang,stanene,bcq加入社群，一起来完善myTT库
 # V2.9  2021-11-29 新增 HHVBARS,LLVBARS,CONST, VALUEWHEN功能函数
 # V2.92 2021-11-30 新增 BARSSINCEN函数,现在可以 pip install MyTT 完成安装   
+# V3.0  2021-12-04 改进 DMA函数支持序列,新增XS2 薛斯通道II指标
   
 
 #以下所有函数如无特别说明，输入参数S均为numpy序列或者列表list，N为整型int
@@ -60,11 +60,14 @@ def EMA(S,N):             #指数移动平均,为了精度 S>4*N  EMA至少需�
 def SMA(S, N, M=1):       #中国式的SMA,至少需要120周期才精确 (雪球180周期)    alpha=1/(1+com)    
     return pd.Series(S).ewm(alpha=M/N,adjust=False).mean().values           #com=N-M/M
 
-def DMA(S, A):            #求S的动态移动平均，A作平滑因子,必须 0<A<1  (此为核心函数，非指标）
-    return pd.Series(S).ewm(alpha=A, adjust=False).mean().values
-
 def WMA(S, N):            #通达信S序列的N日加权移动平均 Yn = (1*X1+2*X2+3*X3+...+n*Xn)/(1+2+3+...+Xn)
     return pd.Series(S).rolling(N).apply(lambda x:x[::-1].cumsum().sum()*2/N/(N+1),raw=True).values 
+
+def DMA(S, A):            #求S的动态移动平均，A作平滑因子,必须 0<A<1  (此为核心函数，非指标）
+    if isinstance(A,(int,float)):  return pd.Series(S).ewm(alpha=A,adjust=False).mean().values    
+    A=np.nan_to_num(A,1.0);   Y= np.zeros(len(S));     Y[0]=S[0]     #A支持序列 by jqz1226 
+    for i in range(1,len(S)): Y[i]=A[i]*S[i] + (1-A[i]) * Y[i-1]            
+    return Y             
   
 def AVEDEV(S, N):         #平均绝对偏差  (序列与其平均值的绝对差的平均值)   
     return pd.Series(S).rolling(N).apply(lambda x: (np.abs(x - x.mean())).mean()).values 
@@ -104,7 +107,6 @@ def BARSLASTCOUNT(S):                  # 统计连续满足S条件的周期数  
   
 def BARSSINCEN(S, N):                  # N周期内第一次S条件成立到现在的周期数,N为常量  by jqz1226
     return pd.Series(S).rolling(N).apply(lambda x:N-1-np.argmax(x) if np.argmax(x) or x[0] else 0,raw=True).fillna(0).values.astype(int)
-
   
 def CROSS(S1, S2):                     # 判断向上金叉穿越 CROSS(MA(C,5),MA(C,10))  判断向下死叉穿越 CROSS(MA(C,10),MA(C,5))   
     return np.concatenate(([False], np.logical_not((S1>S2)[:-1]) & (S1>S2)[1:]))    # 不使用0级函数,移植方便  by jqz1226
@@ -220,7 +222,7 @@ def MTM(CLOSE,N=12,M=6):                             #动量指标
     MTM=CLOSE-REF(CLOSE,N);         MTMMA=MA(MTM,M)
     return MTM,MTMMA
 
-def MASS(HIGH,LOW,N1=9,N2=25,M=6):                   # 梅斯线
+def MASS(HIGH,LOW,N1=9,N2=25,M=6):                   #梅斯线
     MASS=SUM(MA(HIGH-LOW,N1)/MA(MA(HIGH-LOW,N1),N1),N2)
     MA_MASS=MA(MASS,M)
     return MASS,MA_MASS
@@ -248,6 +250,13 @@ def ASI(OPEN,CLOSE,HIGH,LOW,M1=26,M2=10):            #振动升降指标
     SI=16*X/R*MAX(AA,BB);   ASI=SUM(SI,M1);   ASIT=MA(ASI,M2);
     return ASI,ASIT   
 
+def XSII(CLOSE, HIGH, LOW, N=102, M=7):              #薛斯通道II  
+    AA  = MA((2*CLOSE + HIGH + LOW)/4, 5)            #最新版DMA才支持 2021-12-4
+    TD1 = AA*N/100;   TD2 = AA*(200-N) / 100
+    CC =  ABS((2*CLOSE + HIGH + LOW)/4 - MA(CLOSE,20))/MA(CLOSE,20)
+    DD =  DMA(CLOSE,CC);    TD3=(1+M/100)*DD;      TD4=(1-M/100)*DD
+    return TD1, TD2, TD3, TD4  
+  
   
   #望大家能提交更多指标和函数  https://github.com/mpquant/MyTT
 
