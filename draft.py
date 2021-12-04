@@ -3,6 +3,39 @@
 # MyTT团队对每个函数精益求精，力争效率速度，代码优雅的完美统一，如果您有更好的实现方案，请不吝赐教！
 # 感谢以下团队成员的努力和贡献： 火焰，jqz1226, stanene, bcq
 
+
+def HHV(S, N):  #HHV,支持N为序列版本
+    # type: (np.ndarray, Optional[int,float, np.ndarray]) -> np.ndarray
+    """
+    HHV(C, 5)  # 最近5天收盘最高价
+    """
+    if isinstance(N, (int, float)):
+        return pd.Series(S).rolling(N).max().values
+    else:
+        res = np.repeat(np.nan, len(S))
+        for i in range(len(S)):
+            if (not np.isnan(N[i])) and N[i] <= i + 1:
+                res[i] = S[i + 1 - N[i]:i + 1].max()
+        return res
+
+
+    
+def LLV(S, N):   #LLV,支持N为序列版本
+    # type: (np.ndarray, Optional[int,float, np.ndarray]) -> np.ndarray
+    """
+    LLV(C, 5)  # 最近5天收盘最低价
+    """
+    if isinstance(N, (int, float)):
+        return pd.Series(S).rolling(N).min().values
+    else:
+        res = np.repeat(np.nan, len(S))
+        for i in range(len(S)):
+            if (not np.isnan(N[i])) and N[i] <= i + 1:
+                res[i] = S[i + 1 - N[i]:i + 1].min()
+        return res
+
+
+
 def SUMBARSFAST(X, A): 
     # type: (np.ndarray, Optional[np.ndarray, float, int]) -> np.ndarray
     """
