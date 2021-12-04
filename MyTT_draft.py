@@ -3,6 +3,7 @@
 # MyTT团队对每个函数精益求精，力争效率速度，代码优雅的完美统一，如果您有更好的实现方案，请不吝赐教！
 # 感谢以下团队成员的努力和贡献： 火焰，jqz1226, stanene, bcq
 
+#------------------------工具函数---------------------------------------------
 
 def HHV(S, N):  #HHV,支持N为序列版本
     # type: (np.ndarray, Optional[int,float, np.ndarray]) -> np.ndarray
@@ -17,7 +18,6 @@ def HHV(S, N):  #HHV,支持N为序列版本
             if (not np.isnan(N[i])) and N[i] <= i + 1:
                 res[i] = S[i + 1 - N[i]:i + 1].max()
         return res
-
 
     
 def LLV(S, N):   #LLV,支持N为序列版本
@@ -64,6 +64,8 @@ def SUMBARSFAST(X, A):
   
 
 
+#------------------------指标函数---------------------------------------------
+
 def SAR(HIGH, LOW, N=10, S=2, M=20):             
     """
     求抛物转向。 例如SAR(10,2,20)表示计算10日抛物转向，步长为2%，步长极限为20%
@@ -100,3 +102,11 @@ def SAR(HIGH, LOW, N=10, S=2, M=20):
             is_long = not is_long
             b_first = True
     return sar_x
+
+
+
+
+
+
+
+
