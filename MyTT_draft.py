@@ -104,7 +104,61 @@ def SAR(HIGH, LOW, N=10, S=2, M=20):
     return sar_x
 
 
+def TDX_SAR(High, Low, iAFStep=2, iAFLimit=20):    # type: (np.ndarray, np.ndarray, int, int) -> np.ndarray
+    """  通达信SAR算法,和通达信SAR对比完全一致   by: jqz1226, 2021-12-18
+    :param High: 最高价序列
+    :param Low: 最低价序列
+    :param iAFStep: AF步长
+    :param iAFLimit: AF极限值
+    :return: SAR序列
+    """
+    af_step = iAFStep / 100;     af_limit = iAFLimit / 100
+    SarX = np.zeros(len(High))   # 初始化返回数组
 
+    # 第一个bar
+    bull = True 
+    af = af_step
+    ep = High[0]
+    SarX[0] = Low[0]
+    # 第2个bar及其以后
+    for i in range(1, len(High)):
+        # 1.更新：hv, lv, af, ep
+        if bull:  # 多
+            if High[i] > ep:  # 创新高
+                ep = High[i]
+                af = min(af + af_step, af_limit)
+        else:  # 空
+            if Low[i] < ep:  # 创新低
+                ep = Low[i]
+                af = min(af + af_step, af_limit)
+        # 2.计算SarX
+        SarX[i] = SarX[i - 1] + af * (ep - SarX[i - 1])
+
+        # 3.修正SarX
+        if bull:
+            SarX[i] = max(SarX[i - 1], min(SarX[i], Low[i], Low[i - 1]))
+        else:
+            SarX[i] = min(SarX[i - 1], max(SarX[i], High[i], High[i - 1]))
+
+        # 4. 判断是否：向下跌破，向上突破
+        if bull:  # 多
+            if Low[i] < SarX[i]:  # 向下跌破，转空
+                bull = False
+                tmp_SarX = ep  # 上阶段的最高点
+                ep = Low[i]
+                af = af_step
+                if High[i - 1] == tmp_SarX:  # 紧邻即最高点
+                    SarX[i] = tmp_SarX
+                else:
+                    SarX[i] = tmp_SarX + af * (ep - tmp_SarX)
+        else:  # 空
+            if High[i] > SarX[i]:  # 向上突破, 转多
+                bull = True
+                ep = High[i]
+                af = af_step
+                SarX[i] = min(Low[i], Low[i - 1])
+    # end for
+    return SarX
 
 
 
