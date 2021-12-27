@@ -1,4 +1,5 @@
 # MyTT 麦语言-通达信-同花顺指标实现     https://github.com/mpquant/MyTT
+# MyTT高级函数验证版本：               https://github.com/mpquant/MyTT/blob/main/MyTT_plus.py
 # Python2老版本pandas特别的MyTT：      https://github.com/mpquant/MyTT/blob/main/MyTT_python2.py 
 # V2.1  2021-6-6   新增 BARSLAST函数 SLOPE,FORCAST线性回归预测函数
 # V2.3  2021-6-13  新增 TRIX,DPO,BRAR,DMA,MTM,MASS,ROC,VR,ASI等指标
@@ -20,6 +21,9 @@ import numpy as np; import pandas as pd
 def RD(N,D=3):   return np.round(N,D)        #四舍五入取3位小数 
 def RET(S,N=1):  return np.array(S)[-N]      #返回序列倒数第N个值,默认返回最后一个
 def ABS(S):      return np.abs(S)            #返回N的绝对值
+def LN(S):       return np.log(S)            #求底是e的自然对数,
+def POW(S,N):    return np.power(S,N)        #求S的N次方
+def SQRT(S):     return np.sqrt(S)           #求S的平方根
 def MAX(S1,S2):  return np.maximum(S1,S2)    #序列max
 def MIN(S1,S2):  return np.minimum(S1,S2)    #序列min
 def IF(S,A,B):   return np.where(S,A,B)      #序列布尔判断 return=A  if S==True  else  B
