@@ -1,5 +1,5 @@
 # MyTT 麦语言-通达信-同花顺指标实现     https://github.com/mpquant/MyTT
-# 本文件函数计算结果经过验证完全正确，可以正常使用，但实现过程还不算太完美，暂时放在此处暂存和参考
+# 高级函数版本，本文件函数计算结果经过验证完全正确，可以正常使用，但代码比较复杂，做为进阶使用。
 # MyTT团队对每个函数精益求精，力争效率速度，代码优雅的完美统一，如果您有更好的实现方案，请不吝赐教！
 # 感谢以下团队成员的努力和贡献： 火焰，jqz1226, stanene, bcq
 
@@ -33,6 +33,27 @@ def LLV(S, N):   #LLV,支持N为序列版本
             if (not np.isnan(N[i])) and N[i] <= i + 1:
                 res[i] = S[i + 1 - N[i]:i + 1].min()
         return res
+
+
+def DSMA(X, N):    # 偏差自适应移动平均线   type: (np.ndarray, int) -> np.ndarray
+    """
+    Deviation Scaled Moving Average (DSMA)    Python by: jqz1226, 2021-12-27
+    Referred function from myTT: SUM, DMA
+    """
+    a1 = math.exp(- 1.414 * math.pi * 2 / N)
+    b1 = 2 * a1 * math.cos(1.414 * math.pi * 2 / N)
+    c2 = b1
+    c3 = -a1 * a1
+    c1 = 1 - c2 - c3        
+    Zeros = np.pad(X[2:] - X[:-2],(2,0),'constant')          
+    Filt = np.zeros(len(X))
+    for i in range(len(X)):
+        Filt[i] = c1 * (Zeros[i] + Zeros[i-1]) / 2 + c2 * Filt[i-1] + c3 * Filt[i-2]    
+    
+    RMS = np.sqrt(SUM(np.square(Filt), N) / N)
+    ScaledFilt = Filt / RMS
+    alpha1 = np.abs(ScaledFilt) * 5 / N    
+    return DMA(X, alpha1)    
 
 
 
