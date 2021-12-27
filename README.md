@@ -18,7 +18,10 @@ MyTT是您量化工具箱里的瑞士军刀，精炼而高效，它将通达信,
 
 * MyTT实现的各种指标和通达信，同花顺，雪球等软件的技术指标一致到小数点后2位
 
+* MyTT高级进阶版本，收录了高级复杂用法的函数和实验验证函数 [MyTT_plus](https://github.com/mpquant/MyTT/blob/main/MyTT_plus.py)
+
 * MyTT也能在python2的老版本pandas中使用，请用此python2版本 [MyTT_python2](https://github.com/mpquant/MyTT/blob/main/MyTT_python2.py)
+
 
 ### 先看一个最简单的例子  
 
