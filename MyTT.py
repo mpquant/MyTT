@@ -10,7 +10,7 @@
 # V2.92 2021-11-30 新增 BARSSINCEN函数,现在可以 pip install MyTT 完成安装   
 # V3.0  2021-12-04 改进 DMA函数支持序列,新增XS2 薛斯通道II指标
 # V3.1  2021-12-19 新增 TOPRANGE,LOWRANGE一级函数
-  
+# V3.2  2022-03-15 修正 DMA函数 
 
 #以下所有函数如无特别说明，输入参数S均为numpy序列或者列表list，N为整型int
 #应用层1级函数完美兼容通达信或同花顺，具体使用方法请参考通达信
@@ -70,7 +70,7 @@ def WMA(S, N):            #通达信S序列的N日加权移动平均 Yn = (1*X1+
 
 def DMA(S, A):            #求S的动态移动平均，A作平滑因子,必须 0<A<1  (此为核心函数，非指标）
     if isinstance(A,(int,float)):  return pd.Series(S).ewm(alpha=A,adjust=False).mean().values    
-    A=np.array(A);   A[np.isnan(A)]=1.0;   Y= np.zeros(len(S));   Y[0]=S[0]     
+    A=np.array(A);   A[np.isnan(A)]=0.0;   Y= np.zeros(len(S));   Y[0]=S[0]    #A中的nan填充为0 by zl 
     for i in range(1,len(S)): Y[i]=A[i]*S[i]+(1-A[i])*Y[i-1]      #A支持序列 by jqz1226         
     return Y             
   
