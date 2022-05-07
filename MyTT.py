@@ -9,11 +9,11 @@
 # V2.9  2021-11-29 新增 HHVBARS,LLVBARS,CONST, VALUEWHEN功能函数
 # V2.92 2021-11-30 新增 BARSSINCEN函数,现在可以 pip install MyTT 完成安装   
 # V3.0  2021-12-04 改进 DMA函数支持序列,新增XS2 薛斯通道II指标
-# V3.1  2021-12-19 新增 TOPRANGE,LOWRANGE一级函数
+# V3.1  2021-12-19 新增 TOPRANGE,LOWRANGE一级函数 
   
 
-#以下所有函数如无特别说明，输入参数S均为numpy序列或者列表list，N为整型int
-#应用层1级函数完美兼容通达信或同花顺，具体使用方法请参考通达信
+#以下所有函数如无特别说明，输入参数S均为numpy序列或者列表list，N为整型int 
+#应用层1级函数完美兼容通达信或同花顺，具体使用方法请参考通达信 
 
 import numpy as np; import pandas as pd
 
