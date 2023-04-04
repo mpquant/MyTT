@@ -10,6 +10,7 @@
 # V2.92 2021-11-30 新增 BARSSINCEN函数,现在可以 pip install MyTT 完成安装   
 # V3.0  2021-12-04 改进 DMA函数支持序列,新增XS2 薛斯通道II指标
 # V3.1  2021-12-19 新增 TOPRANGE,LOWRANGE一级函数 
+# V3.2  2023-04-04 新增 CR指标
   
 
 #以下所有函数如无特别说明，输入参数S均为numpy序列或者列表list，N为整型int 
@@ -213,6 +214,10 @@ def TRIX(CLOSE,M1=12, M2=20):                      #三重指数平滑平均线
 def VR(CLOSE,VOL,M1=26):                            #VR容量比率
     LC = REF(CLOSE, 1)
     return SUM(IF(CLOSE > LC, VOL, 0), M1) / SUM(IF(CLOSE <= LC, VOL, 0), M1) * 100
+  
+def CR(CLOSE,HIGH,LOW,N=20):                        #CR价格动量指标
+    MID=REF(HIGH+LOW+CLOSE,1)/3;
+    return SUM(MAX(0,HIGH-MID),N)/SUM(MAX(0,MID-LOW),N)*100  
 
 def EMV(HIGH,LOW,VOL,N=14,M=9):                     #简易波动指标 
     VOLUME=MA(VOL,N)/VOL;       MID=100*(HIGH+LOW-REF(HIGH+LOW,1))/(HIGH+LOW)
