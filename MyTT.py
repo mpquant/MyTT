@@ -11,6 +11,7 @@
 # V3.0  2021-12-04 改进 DMA函数支持序列,新增XS2 薛斯通道II指标
 # V3.1  2021-12-19 新增 TOPRANGE,LOWRANGE一级函数 
 # V3.2  2023-04-04 新增 CR指标
+# V3.3  2023-11-09 新增 SIN,COS,TAN序列处理的三角函数
   
 
 #以下所有函数如无特别说明，输入参数S均为numpy序列或者列表list，N为整型int 
@@ -25,6 +26,9 @@ def ABS(S):      return np.abs(S)            #返回N的绝对值
 def LN(S):       return np.log(S)            #求底是e的自然对数,
 def POW(S,N):    return np.power(S,N)        #求S的N次方
 def SQRT(S):     return np.sqrt(S)           #求S的平方根
+def SIN(S):      return np.sin(S)            #求S的正弦值（弧度)
+def COS(S):      return np.cos(S)            #求S的余弦值（弧度)
+def TAN(S):      return np.tan(S)            #求S的正切值（弧度)  
 def MAX(S1,S2):  return np.maximum(S1,S2)    #序列max
 def MIN(S1,S2):  return np.minimum(S1,S2)    #序列min
 def IF(S,A,B):   return np.where(S,A,B)      #序列布尔判断 return=A  if S==True  else  B
