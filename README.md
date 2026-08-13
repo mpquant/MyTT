@@ -366,4 +366,4 @@ plt.plot(up,label='唐安奇-上轨');     plt.plot(mid,label='唐安奇-中轨'
 
 ----------------------------------------------------
 ## Star 历史
-[![Star History Chart](https://api.star-history.com/svg?repos=mpquant/MyTT&type=Date)](https://star-history.com/#mpquant/MyTT&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=mpquant/MyTT&type=Date)](https://star-history.dera.page/#mpquant/MyTT&Date)
